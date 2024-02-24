@@ -8,7 +8,7 @@
 
 ## Буря событий и домены
 
-<img width="1024" alt="es-domain-model" src="https://github.com/BrittleFoot/async-architecture/assets/14301123/25d75436-62b5-46bc-9ac4-7eef4d9e1c33">
+<img width="1024" alt="image" src="https://github.com/BrittleFoot/async-architecture/assets/14301123/61d5c9f7-6306-4ecb-8d37-7db6872b62ba">
 
 ## Модель Данных
 

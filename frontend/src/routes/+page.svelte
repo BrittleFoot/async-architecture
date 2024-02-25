@@ -1,7 +1,7 @@
 <h1>🥳 Welcome to Popug Awesome Tracker 🎉</h1>
 
 <div data-tooltip="💂‍♀️ Please follow me" class="image-wrap">
-	<img src="/parrot.webp" alt="Parrots" />
+	<img src="/parrot.png" alt="Parrots" />
 </div>
 
 <style>

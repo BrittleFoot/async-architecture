@@ -1,35 +1,22 @@
-import { redirect } from '@sveltejs/kit';
 import { signOut } from '../../auth';
 import type { Actions } from './$types';
-import { getTokenInfoBySessionToken } from '$lib/db/methods';
 import { AuthService } from '$lib/api/auth';
+import { ensureAuthenticated } from '$lib';
 
 export const actions: Actions = {
-	default: async (event) => {
-		let session = await event.locals.auth();
+    default: async (event) => {
+        let { tokenInfo } = await ensureAuthenticated(await event.locals.auth(), '/');
 
-		if (!session?.user) {
-			throw redirect(302, '/');
-		}
+        try {
+            await new AuthService().revokeToken(tokenInfo);
+        } catch (e) {
+            console.error('error revoking token', e);
+        }
 
-		let sessionToken = event.cookies.get('authjs.session-token');
-		if (sessionToken) {
-			let authService = new AuthService(null);
-			try {
-				await authService.revokeToken(sessionToken);
-			} catch (e) {
-				console.error('error revoking token', e);
-			}
-		}
-
-		await signOut(event);
-	}
+        await signOut(event);
+    }
 };
 
 export const load = async (event) => {
-	let session = await event.locals.auth();
-
-	if (!session?.user) {
-		throw redirect(302, '/');
-	}
+    await ensureAuthenticated(await event.locals.auth(), '/');
 };

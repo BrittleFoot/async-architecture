@@ -3,7 +3,9 @@
 </script>
 
 {#if $page.data.session}
-	<strong>{$page.data.session.user?.name ?? 'User'}</strong>
+	<a href="/me">
+		<strong>{$page.data.session.user?.name ?? 'User'}</strong>
+	</a>
 	<a href="/signout">Sign Out</a>
 {:else}
 	<a href="/signin">Sign In</a>

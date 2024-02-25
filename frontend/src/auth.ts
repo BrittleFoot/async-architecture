@@ -36,9 +36,8 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 			}
 			return true;
 		},
-		async session({ session, newSession }) {
-			let authService = new AuthService();
-			await authService.refreshTokenIfNeeded(session.sessionToken);
+		async session({ session }) {
+            await new AuthService().refreshTokenIfNeeded(session.sessionToken);
 			return session;
 		}
 	}

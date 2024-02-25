@@ -1,4 +1,5 @@
 import { CLIENT_ID, CLIENT_SECRET } from '$env/static/private';
+import { PUBLIC_AUTH_BACKEND_URL } from '$env/static/public';
 import ApiClient from '$lib';
 import { getTokenInfoBySessionToken, updateUserAccount, type TokenInfo } from '$lib/db/methods';
 import type { Account } from '@auth/sveltekit';
@@ -13,26 +14,9 @@ type TokenResponse = {
 
 export class AuthService {
 	api: ApiClient;
-	tokenInfo: TokenInfo | null = null;
 
 	constructor() {
-		this.api = new ApiClient(null);
-	}
-
-	async getTokenInfo(sessionToken: string): Promise<TokenInfo | null> {
-		if (this.tokenInfo) {
-			return this.tokenInfo;
-		}
-
-		if (!sessionToken) {
-			return null;
-		}
-		let tokenInfo = await getTokenInfoBySessionToken(sessionToken);
-		if (!tokenInfo) {
-			return null;
-		}
-		this.tokenInfo = tokenInfo;
-		return tokenInfo;
+		this.api = new ApiClient({ backendUrl: PUBLIC_AUTH_BACKEND_URL });
 	}
 
 	async signIn(userId: number, account: Account) {
@@ -41,8 +25,7 @@ export class AuthService {
 
 	async signOut() {}
 
-	async revokeToken(sessionToken: string) {
-		let tokenInfo = await this.getTokenInfo(sessionToken);
+	async revokeToken(tokenInfo?: TokenInfo) {
 		if (!tokenInfo) {
 			return;
 		}

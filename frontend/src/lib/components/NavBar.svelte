@@ -14,10 +14,13 @@
 	</ul>
 	<ul>
 		<li>
-			<a href="/books">Books</a>
+			<a href="/tracker">Tracker</a>
 		</li>
 		<li>
-			<a href="/authors">Authors</a>
+			<a href="/balance" aria-disabled="true">Balance</a>
+		</li>
+		<li>
+			<a href="/books">Books?</a>
 		</li>
 		<li>
 			<SignInButtons />

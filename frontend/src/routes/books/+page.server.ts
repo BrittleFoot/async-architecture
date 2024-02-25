@@ -1,37 +1,25 @@
-import { RequestError } from '$lib';
+import { RequestError, ensureAuthenticated } from '$lib';
 import { BookService } from '$lib/api/books.js';
-import { getTokenInfoBySessionToken } from '$lib/db/methods.js';
-import { error, redirect } from '@sveltejs/kit';
 
 async function pageData(accessToken: string) {
-	let bookService = new BookService(accessToken);
+    let bookService = new BookService(accessToken);
 
-	try {
-		let books = await bookService.getBooks();
+    try {
+        return {
+            books: await bookService.getBooks()
+        };
+    } catch (e) {
+        if (e instanceof RequestError)
+            throw e.toServerError();
 
-		return {
-			books: books
-		};
-	} catch (e) {
-		if (e instanceof RequestError) throw error(e.status, { message: e.message, data: e.data });
-		else throw e;
-	}
+        throw e;
+    }
 }
 
-export const load = async ({ locals, cookies }) => {
-	let session = await locals.auth();
-	let sessionToken = cookies.get('authjs.session-token');
+export const load = async ({ locals }) => {
+    let { tokenInfo } = await ensureAuthenticated(await locals.auth());
 
-	if (!session?.user || !sessionToken) {
-		throw redirect(302, '/signin');
-	}
-
-	let tokenInfo = await getTokenInfoBySessionToken(sessionToken);
-	if (!tokenInfo) {
-		throw redirect(302, '/signin');
-	}
-
-	return {
-		...(await pageData(tokenInfo.accessToken))
-	};
+    return {
+        ...(await pageData(tokenInfo.accessToken))
+    };
 };

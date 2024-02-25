@@ -23,7 +23,19 @@ export class AuthService {
 		await updateUserAccount(userId, account);
 	}
 
-	async signOut() {}
+	async signOut(tokenInfo?: TokenInfo) {
+		await this.revokeToken(tokenInfo);
+	}
+
+	async signUp(username: string, password: string) {
+		return await this.api.unsafeRequest<User>('/api/v1/users/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ username, password })
+		});
+	}
 
 	async revokeToken(tokenInfo?: TokenInfo) {
 		if (!tokenInfo) {

@@ -4,8 +4,10 @@ django-environ
 django-behaviors
 django-cors-headers
 django-oauth-toolkit
+djangorestframework-camel-case
+whitenoise
 
 psycopg2-binary
 uritemplate
 pyyaml
-whitenoise
+confluent-kafka

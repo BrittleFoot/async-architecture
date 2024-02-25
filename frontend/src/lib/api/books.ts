@@ -15,7 +15,7 @@ export type Book = {
 export class BookService {
 	api: ApiClient;
 	constructor(accessToken: string) {
-		this.api = new ApiClient({ backendUrl: PUBLIC_AUTH_BACKEND_URL, accessToken});
+		this.api = new ApiClient({ backendUrl: PUBLIC_AUTH_BACKEND_URL, accessToken });
 	}
 	async getBooks(): Promise<Book[]> {
 		return await this.api.request<Book[]>('/api/v1/books/');

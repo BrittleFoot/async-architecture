@@ -5,11 +5,11 @@ import PostgresAdapter from '@auth/pg-adapter';
 import connectionPool from '$lib/db/connect';
 import { AuthService } from '$lib/api/auth';
 
-type User = {
-	id: string;
-	name: string;
-	token: string;
-};
+function isUUID(str: string): boolean {
+	const regex =
+		/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89ABab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+	return regex.test(str);
+}
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
 	providers: [
@@ -30,14 +30,15 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 	],
 	adapter: PostgresAdapter(connectionPool),
 	callbacks: {
-		async signIn({ account, user }) {
-			if (account && user && user.id) {
+		async signIn({ account, user, profile }) {
+			let firstTimeSignIn = isUUID(user.id ?? '');
+			if (!firstTimeSignIn && account && user && user.id) {
 				await new AuthService().signIn(Number.parseInt(user.id), account);
 			}
 			return true;
 		},
 		async session({ session }) {
-            await new AuthService().refreshTokenIfNeeded(session.sessionToken);
+			await new AuthService().refreshTokenIfNeeded(session.sessionToken);
 			return session;
 		}
 	}

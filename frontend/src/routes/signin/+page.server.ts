@@ -1,23 +1,14 @@
-import { redirect } from '@sveltejs/kit';
 import { signIn } from '../../auth';
 import type { Actions } from './$types';
+import { ensureNotAuthenticated } from '$lib';
 
 export const actions: Actions = {
 	default: async (event) => {
-		let session = await event.locals.auth();
-
-		if (session?.user) {
-			throw redirect(302, '/');
-		}
-
+		ensureNotAuthenticated(await event.locals.auth());
 		await signIn(event);
 	}
 };
 
 export const load = async (event) => {
-	let session = await event.locals.auth();
-
-	if (session?.user) {
-		throw redirect(302, '/');
-	}
+	ensureNotAuthenticated(await event.locals.auth());
 };

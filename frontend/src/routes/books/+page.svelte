@@ -2,7 +2,7 @@
 	export let data;
 </script>
 
-<h1>Books</h1>
+<h1>📚 Books</h1>
 
 <ol>
 	{#each data.books as book}

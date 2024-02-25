@@ -9,20 +9,22 @@
 {#if $page.error}
 	<p>{$page.error.message}</p>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Header Name</th>
-				<th>Value</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each $page.error.data.headers as [key, value]}
+	{#if $page.error.data?.headers}
+		<table>
+			<thead>
 				<tr>
-					<td>{key}</td>
-					<td>{value}</td>
+					<th>Header Name</th>
+					<th>Value</th>
 				</tr>
-			{/each}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{#each $page.error.data.headers as [key, value]}
+					<tr>
+						<td>{key}</td>
+						<td>{value}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	{/if}
 {/if}

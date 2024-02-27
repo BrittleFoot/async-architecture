@@ -2,3 +2,7 @@
 	$semantic-root-element: '#root',
 	$enable-semantic-container: true
 );
+
+html {
+	overflow-y: scroll;
+}

@@ -1,4 +1,4 @@
-import { ensureAuthenticated } from '$lib';
+import { ensureAuthenticated } from '$lib/auth';
 import { UserService } from '$lib/api/user.js';
 
 export const load = async ({ locals }) => {

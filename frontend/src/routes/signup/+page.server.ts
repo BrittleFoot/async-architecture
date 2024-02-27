@@ -1,6 +1,7 @@
 import type { Actions } from './$types';
-import { RequestError, ensureNotAuthenticated } from '$lib';
+import { ensureNotAuthenticated } from '$lib/auth';
 import { AuthService } from '$lib/api/auth';
+import { RequestError } from '$lib';
 
 type RegistraionErrors = {
 	username?: string;
@@ -34,7 +35,6 @@ export const actions: Actions = {
 
 		try {
 			let user = await new AuthService().signUp(regInfo.username, regInfo.password);
-			console.log('user', user);
 			return {
 				user
 			};

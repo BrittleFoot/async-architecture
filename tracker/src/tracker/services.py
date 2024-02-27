@@ -35,9 +35,7 @@ class TaskService:
         Task.objects.bulk_update(current_tasks, ["performer"])
         return len(current_tasks)
 
-    def complete_task(self, task_id) -> Task:
-        task = Task.objects.get(id=task_id)
-
+    def complete_task(self, task: Task) -> Task:
         task.status = TaskStatus.DONE
         task.save()
         return task

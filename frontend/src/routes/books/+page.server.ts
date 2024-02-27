@@ -1,4 +1,4 @@
-import { ensureAuthenticated } from '$lib';
+import { ensureAuthenticated } from '$lib/auth';
 import { BookService } from '$lib/api/books.js';
 
 async function pageData(accessToken: string) {

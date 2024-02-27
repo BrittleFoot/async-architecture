@@ -1,4 +1,4 @@
-import { ensureAuthenticated } from '$lib';
+import { ensureAuthenticated } from '$lib/auth';
 
 export const load = async ({ locals }) => {
 	await ensureAuthenticated(await locals.auth());

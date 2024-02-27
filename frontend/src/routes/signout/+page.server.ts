@@ -1,7 +1,7 @@
 import { signOut } from '../../auth';
 import type { Actions } from './$types';
 import { AuthService } from '$lib/api/auth';
-import { ensureAuthenticated } from '$lib';
+import { ensureAuthenticated } from '$lib/auth';
 
 export const actions: Actions = {
 	default: async (event) => {

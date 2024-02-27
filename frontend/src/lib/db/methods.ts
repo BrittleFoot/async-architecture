@@ -1,6 +1,5 @@
 import type { Account, User } from '@auth/sveltekit';
 import connectionPool from './connect';
-import type { AdapterUser } from '@auth/core/adapters';
 
 export type TokenInfo = {
 	userId: number;

@@ -1,6 +1,6 @@
 import { signIn } from '../../auth';
 import type { Actions } from './$types';
-import { ensureNotAuthenticated } from '$lib';
+import { ensureNotAuthenticated } from '$lib/auth';
 
 export const actions: Actions = {
 	default: async (event) => {

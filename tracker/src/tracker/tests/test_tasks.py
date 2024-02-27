@@ -46,7 +46,7 @@ def test_reassign_tasks(mixer, task_service, role):
     # 10 tasks and users to ensure random test stable
 
     done_task = tasks[0]
-    task_service.complete_task(done_task.id)
+    task_service.complete_task(done_task)
 
     task_service.reassign_tasks()
 

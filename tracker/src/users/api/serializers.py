@@ -3,6 +3,14 @@ from rest_framework import serializers
 from users.models import User, UserRole
 
 
+class UserLightSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="username")
+
+    class Meta:
+        model = User
+        fields = ["id", "name", "username"]
+
+
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="username")
     roles = serializers.SlugRelatedField(

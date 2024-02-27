@@ -28,7 +28,8 @@ if DEBUG or env("CORS_ALLOW_ALL_ORIGINS"):
 # Application definition
 
 INTERNAL_APPS = [
-    "books",
+    "users",
+    "tracker",
 ]
 
 THIRD_PARTY_APPS = [
@@ -91,6 +92,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {

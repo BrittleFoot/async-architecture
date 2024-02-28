@@ -14,7 +14,10 @@ test:
 
 start:
 	docker-compose up -d
-	cd src && ./manage.py runserver $(port)
+	cd src && ./manage.py runserver 9000
+
+consumer:
+	cd src && ./manage.py consumer
 
 # image:
 # 	docker build -t test .

@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from app.models import TimestampedModel
 from django.db import models
+from django.utils.timezone import make_aware
 from users.models import User
 
 
@@ -19,7 +22,8 @@ class Task(TimestampedModel):
         return self.status == TaskStatus.DONE
 
     def save(self, *args, **kwargs):
-        print("Task is being saved", self, args, kwargs)
+        if self.status == TaskStatus.DONE and not self.completion_date:
+            self.completion_date = make_aware(datetime.utcnow())
         super().save(*args, **kwargs)
 
     def __str__(self):

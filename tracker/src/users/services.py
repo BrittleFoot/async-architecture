@@ -1,22 +1,34 @@
-from functools import partial
-
-from app.messages import Producer, Topics, UserEvents
-
-from users.api.serializers import UserSerializer
-from users.models import User
+from users.models import User, UserRole
 
 
 class UserService:
-    def __init__(self):
-        self._producer = Producer()
-        self.produce = partial(self._producer.produce, Topics.ACCOUNT)
+    def from_dict(self, data: dict):
+        return {
+            "username": data["username"],
+            "public_id": data["public_id"],
+        }
 
-    def create_user(self, **data: dict):
-        user = User.objects.create_user(**data, is_staff=True)
+    def get_or_create_roles(self, names: str):
+        for name in names:
+            role, _ = UserRole.objects.get_or_create(name=name)
+            yield role
 
-        serialized = UserSerializer(user).data
+    def create_user(self, data: dict):
+        user_data = self.from_dict(data)
+        roles = list(self.get_or_create_roles(data["roles"]))
 
-        data = UserEvents.wrap(UserEvents.CREATED, serialized)
-        self.produce([data])
+        user = User.objects.create_user(**user_data, is_staff=True)
+        user.roles.set(roles)
+
+        return user
+
+    def update_user(self, data: dict):
+        user_data = self.from_dict(data)
+        roles = list(self.get_or_create_roles(data["roles"]))
+
+        user = User.objects.get(public_id=user_data["public_id"])
+        user.username = user_data["username"]
+        user.save()
+        user.roles.set(roles)
 
         return user

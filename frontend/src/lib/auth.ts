@@ -21,6 +21,21 @@ export async function ensureAuthenticated(
 	return { tokenInfo, session: trueSession };
 }
 
+export async function getTokenInfo(session: Session | null): Promise<{ tokenInfo?: TokenInfo }> {
+	let trueSession = session as (Session & AdapterSession) | null;
+
+	if (!trueSession || !trueSession?.user || !trueSession.sessionToken) {
+		return {}
+	}
+
+	let tokenInfo = await getTokenInfoBySessionToken(trueSession.sessionToken);
+	if (!tokenInfo) {
+		return {}
+	}
+
+	return { tokenInfo };
+}
+
 export function ensureNotAuthenticated(session: Session | null, redirectTo: string = '/') {
 	if (session && session.user) {
 		throw redirect(302, redirectTo);

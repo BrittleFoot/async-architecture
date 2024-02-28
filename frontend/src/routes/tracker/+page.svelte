@@ -3,11 +3,24 @@
 	import { TrackerService, type Task } from '$lib/api/tracker';
 	import TaskCard from '$lib/components/TaskCard.svelte';
 	import NewTaskForm from '$lib/components/NewTaskForm.svelte';
+	import Button from '$lib/components/Button.svelte';
 
-	let trackerService = new TrackerService(/*data.accessToken*/);
+	export let data;
+
+	let trackerService = new TrackerService(data.accessToken);
 	let tasks: Task[] = [];
+	let renderTasks: Task[] = [];
+	let lastFull: Task[] = [];
+
 	let firstLoad = true;
 	let hideCompleted = false;
+
+	$: userCanReassgn = data.user?.roles.includes('manager') || data.user?.roles.includes('admin');
+
+	async function refreshTasks() {
+		tasks = await trackerService.getTasks(hideCompleted);
+		renderTasks = tasks;
+	}
 
 	onMount(async () => {
 		await refreshTasks();
@@ -24,8 +37,20 @@
 		await refreshTasks();
 	}
 
-	async function refreshTasks() {
-		tasks = await trackerService.getTasks(hideCompleted);
+	async function hideCompletedTasks() {
+		if (hideCompleted) {
+			lastFull = tasks;
+			renderTasks = tasks.filter(task => (task.status !== 'done') || !hideCompleted);
+		} else {
+			renderTasks = lastFull;
+		}
+		await refreshTasks();
+	}
+
+
+	async function reassign() {
+		await trackerService.reassignTasks();
+		await refreshTasks();
 	}
 </script>
 
@@ -35,21 +60,35 @@
 
 <NewTaskForm onTaskCreated={createTask} />
 
-<div class="onliner">
-	<h2>Tasks</h2>
+{#if userCanReassgn}
+	<div>
+		<h2>Become a Mischief!</h2>
+		<Button value="😵‍💫 REASSIGN TASKS 😵‍💫" onClick={reassign}/>
+	</div>
+{/if}
+
+<br/>
+<div class="onliner relative">
+	<h2 class="section">Tasks</h2>
 	<label>
-		Hide completed
-		<input type="checkbox" bind:checked={hideCompleted} on:change={refreshTasks} />
+		<span>Hide completed</span>
+		<input type="checkbox" bind:checked={hideCompleted} on:change={hideCompletedTasks} />
 	</label>
+
+	<div aria-busy={firstLoad} class="loader"></div>
 </div>
 
-<div aria-busy={firstLoad} class="loader"></div>
 
-{#each tasks as task (task.id)}
+{#each renderTasks as task (task.id)}
 	<TaskCard {task} onMarkedCompleted={completeTask} />
 {/each}
 
 <style>
+
+	.relative {
+		position: relative;
+	}
+
 	.loader {
 		position: absolute;
 		top: 50%;
@@ -61,4 +100,5 @@
 		justify-content: space-between;
 		align-items: baseline;
 	}
+
 </style>

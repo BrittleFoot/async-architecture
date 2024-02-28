@@ -9,6 +9,6 @@ export class UserService {
 	}
 
 	async getMe() {
-		return await this.api.request<User>('/api/v1/users/me');
+		return await this.api.request<User>('/api/v1/users/me/');
 	}
 }

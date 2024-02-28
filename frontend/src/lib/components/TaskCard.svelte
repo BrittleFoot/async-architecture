@@ -51,9 +51,4 @@
 		width: 11em;
 	}
 
-	.success {
-		background-color: #4caf50;
-		color: white;
-		opacity: 0.9;
-	}
 </style>

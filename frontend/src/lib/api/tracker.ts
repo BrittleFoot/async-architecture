@@ -48,4 +48,10 @@ export class TrackerService {
 			}
 		});
 	}
+
+	async reassignTasks(): Promise<void> {
+		return await this.api.request<void>(`/api/v1/tasks/reassign/`, {
+			method: 'POST',
+		});
+	}
 }

@@ -50,8 +50,9 @@ class UsersViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         edit_user = self.get_object()
 
-        if not is_admin(request.user):
+        if not is_admin(request.user) and not request.user.is_superuser:
             # Normal users cannot edit their own roles
+            print(f">>> Not admin: {request.user} trying to edit roles. Ignoring.")
             request.data.pop("roles", None)
 
         try:

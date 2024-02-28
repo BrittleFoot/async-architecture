@@ -12,6 +12,6 @@ urlpatterns = [
     ),
     path(
         "oauth/",
-        include("oauth2_provider.urls", namespace="oauth2_provider"),
+        include("app.urls.oauth_urls", namespace="oauth2_provider"),
     ),
 ]

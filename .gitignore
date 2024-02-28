@@ -2,3 +2,4 @@
 .vscode
 aa_service_template
 .env
+.ruff_cache

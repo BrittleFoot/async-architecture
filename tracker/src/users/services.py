@@ -26,7 +26,10 @@ class UserService:
         user_data = self.from_dict(data)
         roles = list(self.get_or_create_roles(data["roles"]))
 
-        user = User.objects.get(public_id=user_data["public_id"])
+        user = User.objects.filter(public_id=user_data["public_id"]).first()
+        if not user:
+            return self.create_user(data)
+
         user.username = user_data["username"]
         user.save()
         user.roles.set(roles)

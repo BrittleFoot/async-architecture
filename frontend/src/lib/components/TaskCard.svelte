@@ -9,10 +9,16 @@
 
 	async function handleSubmit() {
 		disabled = true;
+		// optimistic update!
+		let prevTaskStatus = task.status;
 		try {
+			task.status = 'done';
+			task = task;
 			await onMarkedCompleted(task);
 			error = null;
 		} catch (error) {
+			task.status = prevTaskStatus;
+			task = task;
 			error = true;
 		}
 		disabled = false;

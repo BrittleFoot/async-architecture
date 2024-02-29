@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import environ
@@ -10,6 +11,10 @@ env = environ.Env(
 
 environ.Env.read_env(BASE_DIR / ".env.dist")
 environ.Env.read_env(BASE_DIR / ".env")
+
+logging.basicConfig(
+    level=logging.INFO, format="[%(asctime)s] - %(name)s - %(levelname)s - %(message)s"
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/

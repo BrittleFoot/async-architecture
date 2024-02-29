@@ -39,10 +39,14 @@
 	async function createTask(summary: string) {
 		// optimistic update!
 		renderTasks = [{ summary } as Task, ...tasks];
-		let newTask = await trackerService.createTask(summary);
-		// twice optimistic update!
-		renderTasks = [newTask, ...tasks];
-		await refreshTasks();
+		try {
+			let newTask = await trackerService.createTask(summary);
+			// twice optimistic update!
+			renderTasks = [newTask, ...tasks];
+			await refreshTasks();
+		} catch (error) {
+			renderTasks = tasks;
+		}
 	}
 
 	async function hideCompletedTasks() {

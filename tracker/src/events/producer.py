@@ -4,13 +4,14 @@ import os
 
 from confluent_kafka import Producer as KafkaProducer
 
-from events.types import DataMessage
+from events.types import DataMessage, Topic
 
 logger = logging.getLogger(__name__)
 
 
 class Producer:
-    def __init__(self):
+    def __init__(self, topic: Topic):
+        self.topic = topic.value
         self.kp = KafkaProducer(
             {
                 "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
@@ -27,13 +28,13 @@ class Producer:
 
         logger.info("Message delivered to %s [%s]", msg.topic(), msg.partition())
 
-    def produce(self, topic, messages: list[DataMessage]):
+    def send(self, messages: list[DataMessage]):
         for event in messages:
             self.kp.poll(0)
 
             data = json.dumps(event, ensure_ascii=False, separators=(",", ":"))
             self.kp.produce(
-                topic=topic,
+                topic=self.topic,
                 key=event["id"],
                 value=data.encode("utf-8"),
                 callback=self.delivery_report,

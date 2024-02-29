@@ -4,15 +4,23 @@ from typing import TypedDict
 
 class Topic(Enum):
     ACCOUNT = "account"
+    TASK = "task"
 
 
 class EventType(Enum):
-    pass
+    def __str__(self):
+        return self.value
 
 
 class UserEvents(EventType):
     CREATED = "user.created"
     UPDATED = "user.updated"
+
+
+class TaskEvents(EventType):
+    CREATED = "task.created"
+    PERFORMER_CHANGED = "task.performer_changed"
+    COMPLETED = "task.completed"
 
 
 class DataMessage(TypedDict):
@@ -22,9 +30,10 @@ class DataMessage(TypedDict):
 
     @classmethod
     def wrap(cls, event_name: EventType, data) -> "DataMessage":
-        assert "id" in data, "Data must contain an id field"
+        id_field = data.get("public_id", data.get("id"))
+        assert id_field, "Data must contain an id or public_id field"
         return cls(
-            event=event_name,
+            event=event_name.value,
             data=data,
-            id=str(data["id"]),
+            id=str(id_field),
         )

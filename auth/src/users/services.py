@@ -1,6 +1,7 @@
 from functools import partial
 
 from app.messages import Producer, Topics, UserEvents
+from django.db import transaction
 
 from users.api.serializers import UserSerializer
 from users.models import User, UserRole
@@ -15,6 +16,7 @@ class UserService:
         self._producer = Producer()
         self.produce = partial(self._producer.produce, Topics.ACCOUNT)
 
+    @transaction.atomic
     def create_user(self, **data: dict):
         user = User.objects.create_user(**data, is_staff=True)
 
@@ -25,6 +27,7 @@ class UserService:
 
         return user
 
+    @transaction.atomic
     def update_user(self, user: User, **data: dict):
         updated = False
         if username := data.pop("username", None):

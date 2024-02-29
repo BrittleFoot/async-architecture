@@ -23,8 +23,12 @@
 	}
 
 	onMount(async () => {
-		await refreshTasks();
-		firstLoad = false;
+		try {
+			await refreshTasks();
+		}
+		finally {
+			firstLoad = false;
+		}
 	});
 
 	async function completeTask(task: Task) {
@@ -33,11 +37,16 @@
 	}
 
 	async function createTask(summary: string) {
-		await trackerService.createTask(summary);
+		// optimistic update!
+		renderTasks = [{ summary } as Task, ...tasks];
+		let newTask = await trackerService.createTask(summary);
+		// twice optimistic update!
+		renderTasks = [newTask, ...tasks];
 		await refreshTasks();
 	}
 
 	async function hideCompletedTasks() {
+		// optimistic update!
 		if (hideCompleted) {
 			lastFull = tasks;
 			renderTasks = tasks.filter((task) => task.status !== 'done' || !hideCompleted);

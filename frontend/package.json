@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"@auth/pg-adapter": "^0.6.0",
+		"@faker-js/faker": "^8.4.1",
 		"@picocss/pico": "^2.0.0",
 		"pg": "^8.11.3"
 	}

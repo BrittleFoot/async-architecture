@@ -26,7 +26,7 @@
 		<input
 			type="performer"
 			readonly
-			value="🦜 {task.performer.username}"
+			value="🦜 {task.performer?.username}"
 			class="performer"
 			aria-label="Read-only input"
 		/>

@@ -3,7 +3,7 @@ from functools import wraps
 
 from users.services import UserService
 
-from events.types import DataMessage, Topics, UserEvents
+from events.types import DataMessage, EventType, Topic, UserEvents
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ topic_filter = _TopicContextFilter(None, None, None)
 logger.addFilter(topic_filter)
 
 
-def topic_handler(topic, event):
+def topic_handler(topic: Topic, event: EventType):
     """
     Register a topic_handler for a given (topic, event) pair.
     """
@@ -52,20 +52,20 @@ def topic_handler(topic, event):
             topic_filter.clear_context()
             return result
 
-        REGISTERED_TOPICS.add(topic)
-        REGISTERED_TOPIC_HANDLERS[(topic, event)] = wrapper
+        REGISTERED_TOPICS.add(topic.value)
+        REGISTERED_TOPIC_HANDLERS[(topic.value, event.value)] = wrapper
 
         return wrapper
 
     return handler_registrator
 
 
-@topic_handler(Topics.ACCOUNT, UserEvents.CREATED)
+@topic_handler(Topic.ACCOUNT, UserEvents.CREATED)
 def handle_user_create(payload: DataMessage):
     user_service = UserService()
     user_service.create_user(payload["data"])
 
 
-@topic_handler(Topics.ACCOUNT, UserEvents.UPDATED)
+@topic_handler(Topic.ACCOUNT, UserEvents.UPDATED)
 def handle_user_update(payload: DataMessage):
     UserService().update_user(payload["data"])

@@ -26,6 +26,7 @@ class Consumer:
                 "bootstrap.servers": os.getenv("KAFKA_BROKER"),
                 "group.id": os.getenv("KAFKA_GROUP_ID"),
                 "auto.offset.reset": "earliest",
+                "enable.auto.commit": False,
             }
         )
 
@@ -81,7 +82,12 @@ class Consumer:
 
                     raise KafkaException(error)
 
+                #################
                 self.process(msg)
+                #################
+                self._consumer.commit(message=msg, asynchronous=False)
+                ######################################################
+
         except KeyboardInterrupt:
             self.warn("Received keyboard interrupt. Shutting down...")
         finally:

@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from app.models import TimestampedModel
@@ -16,6 +17,9 @@ class Task(TimestampedModel):
     performer = models.ForeignKey(User, on_delete=models.PROTECT, related_name="tasks")
     status = models.CharField(max_length=255, choices=TaskStatus.choices, default="new")
     completion_date = models.DateTimeField(null=True, blank=True)
+    public_id = models.UUIDField(
+        unique=True, editable=False, default=uuid.uuid4, db_index=True
+    )
 
     @property
     def is_completed(self):

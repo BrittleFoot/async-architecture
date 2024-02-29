@@ -19,7 +19,7 @@ class TaskViewSet(ListViewSet):
     def filter_queryset(self, queryset):
         q = Q()
 
-        if status := self.request.query_pasrams.get("status"):
+        if status := self.request.query_params.get("status"):
             q &= Q(status=status)
 
         return super().filter_queryset(queryset).filter(q)

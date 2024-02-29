@@ -1,6 +1,16 @@
 <script lang="ts">
+	import { faker } from '@faker-js/faker';
+
+	function capitalize(string: string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+
+	function suggestTask() {
+		return capitalize(faker.company.buzzVerb()) + ' a ' + faker.company.catchPhrase().toLowerCase() + '!';
+	}
+
 	export let onTaskCreated: (summary: string) => Promise<void>;
-	let summary = '';
+	let summary = suggestTask();
 	let inputError: boolean | null = null;
 	let disabled = false;
 	$: text = disabled ? 'Creating' : 'Create a Task';
@@ -17,7 +27,7 @@
 		} catch (error) {
 			inputError = true;
 		}
-		summary = '';
+		summary = suggestTask();
 		disabled = false;
 	}
 </script>

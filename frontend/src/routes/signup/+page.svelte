@@ -1,5 +1,13 @@
 <script lang="ts">
+	import { faker } from '@faker-js/faker';
+	import { onMount } from 'svelte';
+
 	export let form;
+
+	let name = "";
+	onMount(() => {
+		name = faker.person.firstName();
+	});
 </script>
 
 <h1>🤗 Sign Up</h1>
@@ -14,8 +22,8 @@
 	{/if}
 
 	<form method="post" action="?/register">
-		<input type="text" name="username" placeholder="Username" required />
-		<input type="password" name="password" placeholder="Password" required />
+		<input type="text" name="username" placeholder="Username" value={name} required />
+		<input type="password" name="password" placeholder="Password" value="1" required />
 
 		<button type="submit">Sign Up</button>
 	</form>

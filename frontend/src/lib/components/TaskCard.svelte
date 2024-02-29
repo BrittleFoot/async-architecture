@@ -50,5 +50,4 @@
 		white-space: nowrap;
 		width: 11em;
 	}
-
 </style>

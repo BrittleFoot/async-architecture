@@ -1,7 +1,6 @@
 from functools import cached_property
 
 from django.db import DatabaseError
-from django.db.models import Q
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from rest_framework import permissions
 from rest_framework.generics import RetrieveAPIView

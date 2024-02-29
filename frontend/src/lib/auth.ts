@@ -25,12 +25,12 @@ export async function getTokenInfo(session: Session | null): Promise<{ tokenInfo
 	let trueSession = session as (Session & AdapterSession) | null;
 
 	if (!trueSession || !trueSession?.user || !trueSession.sessionToken) {
-		return {}
+		return {};
 	}
 
 	let tokenInfo = await getTokenInfoBySessionToken(trueSession.sessionToken);
 	if (!tokenInfo) {
-		return {}
+		return {};
 	}
 
 	return { tokenInfo };

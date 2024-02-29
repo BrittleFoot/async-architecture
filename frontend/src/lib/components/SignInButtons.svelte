@@ -5,19 +5,19 @@
 </script>
 
 {#if $page.data.session}
-<a href="/me">
-	<button>{username}</button>
-</a>
-<a href="/signout">
-	<button>Sign Out</button>
-</a>
+	<a href="/me">
+		<button>{username}</button>
+	</a>
+	<a href="/signout">
+		<button>Sign Out</button>
+	</a>
 {:else}
-<a href="/signup">
-	<button>Sign Up</button>
-</a>
-<a href="/signin">
-	<button class="success">Sign In</button>
-</a>
+	<a href="/signup">
+		<button>Sign Up</button>
+	</a>
+	<a href="/signin">
+		<button class="success">Sign In</button>
+	</a>
 {/if}
 
 <style>

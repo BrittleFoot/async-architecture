@@ -40,13 +40,12 @@
 	async function hideCompletedTasks() {
 		if (hideCompleted) {
 			lastFull = tasks;
-			renderTasks = tasks.filter(task => (task.status !== 'done') || !hideCompleted);
+			renderTasks = tasks.filter((task) => task.status !== 'done' || !hideCompleted);
 		} else {
 			renderTasks = lastFull;
 		}
 		await refreshTasks();
 	}
-
 
 	async function reassign() {
 		await trackerService.reassignTasks();
@@ -63,11 +62,11 @@
 {#if userCanReassgn}
 	<div>
 		<h2>Become a Mischief!</h2>
-		<Button value="😵‍💫 REASSIGN TASKS 😵‍💫" onClick={reassign}/>
+		<Button value="😵‍💫 REASSIGN TASKS 😵‍💫" onClick={reassign} />
 	</div>
 {/if}
 
-<br/>
+<br />
 <div class="onliner relative">
 	<h2 class="section">Tasks</h2>
 	<label>
@@ -78,13 +77,11 @@
 	<div aria-busy={firstLoad} class="loader"></div>
 </div>
 
-
 {#each renderTasks as task (task.id)}
 	<TaskCard {task} onMarkedCompleted={completeTask} />
 {/each}
 
 <style>
-
 	.relative {
 		position: relative;
 	}
@@ -100,5 +97,4 @@
 		justify-content: space-between;
 		align-items: baseline;
 	}
-
 </style>

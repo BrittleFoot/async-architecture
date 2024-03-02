@@ -41,8 +41,8 @@ class TaskViewSet(ListViewSet):
     def update(self, request, *args, **kwargs):
         """Can only complete tasks"""
         task = self.get_object()
-        if self._is_current_user_performer(task):
-            raise PermissionDenied()
+        if not self._is_current_user_performer(task):
+            raise PermissionDenied("You are not the performer of this task")
 
         self.task_service.complete_task(task)
         return Response(self.get_serializer_class()(task).data, status=status.HTTP_200_OK)

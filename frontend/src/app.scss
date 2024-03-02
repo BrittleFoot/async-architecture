@@ -16,5 +16,14 @@ html {
 .success {
 	background-color: #398a3c;
 	color: white;
+}
+
+
+body {
+	max-width: 1024px;
+	margin: 0 auto;
+}
+
+[disabled] {
 	opacity: 0.9;
 }

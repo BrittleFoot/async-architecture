@@ -8,10 +8,13 @@ export type Task = {
 	performer: TaskUser;
 	completionDate: string;
 	created: string;
+
+	optimistic?: boolean;
 };
 
 export type TaskUser = {
 	username: string;
+	publicId: string;
 };
 
 export class TrackerService {

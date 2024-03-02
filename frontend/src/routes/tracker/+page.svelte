@@ -38,7 +38,7 @@
 
 	async function createTask(summary: string) {
 		// optimistic update!
-		renderTasks = [{ summary } as Task, ...tasks];
+		renderTasks = [{ summary, optimistic: true } as Task, ...tasks];
 		try {
 			let newTask = await trackerService.createTask(summary);
 			// twice optimistic update!

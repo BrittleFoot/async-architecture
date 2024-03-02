@@ -4,4 +4,5 @@ type User = {
 	name: string;
 	token: string;
 	roles: string[];
+	publicId: string;
 };

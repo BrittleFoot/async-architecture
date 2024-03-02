@@ -47,7 +47,7 @@
 		height: 100%;
 		width: 100%;
 		object-fit: cover;
-		opacity: 0.4;
+		opacity: 0.35;
 		border-radius: 2em;
 		z-index: -1;
 	}

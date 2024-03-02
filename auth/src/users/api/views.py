@@ -3,6 +3,7 @@ from functools import cached_property
 from django.db import DatabaseError
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from rest_framework import permissions
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -50,9 +51,7 @@ class UsersViewSet(ModelViewSet):
         edit_user = self.get_object()
 
         if not is_admin(request.user) and not request.user.is_superuser:
-            # Normal users cannot edit their own roles
-            print(f">>> Not admin: {request.user} trying to edit roles. Ignoring.")
-            request.data.pop("roles", None)
+            raise PermissionDenied("Normal users cannot edit their own roles")
 
         try:
             user = self.user_service.update_user(edit_user, **request.data)

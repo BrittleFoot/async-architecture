@@ -11,4 +11,12 @@ export class UserService {
 	async getMe() {
 		return await this.api.request<User>('/api/v1/users/me/');
 	}
+
+	async listUsers() {
+		return await this.api.request<User[]>('/api/v1/users/');
+	}
+
+	async editUser(user: UserEdit) {
+		return await this.api.jsonRequest<User>('PUT', `/api/v1/users/${user.id}/`, user);
+	}
 }

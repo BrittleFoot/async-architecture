@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { RequestError } from '$lib';
 	import type { Task } from '$lib/api/tracker';
-	import { isHttpError } from '@sveltejs/kit';
+	import { getErrorMsg } from '$lib/typeUtils';
 
 	export let onMarkedCompleted: (task: Task) => Promise<void>;
 	export let task: Task;
@@ -26,14 +25,7 @@
 			task.status = prevTaskStatus;
 			task = task;
 
-			if (isHttpError(e)) {
-				error = `${e.body.message}: ${e.body.data?.detail?.detail}`;
-			} else if (e instanceof RequestError){
-				error = e.message;
-			} else {
-				let er = e as { status: number; body: { message: string } };
-				error = `${er.status}: ${er.body.message}`;
-			}
+			error = getErrorMsg(e);
 		}
 		submitting = false;
 	}
@@ -59,8 +51,8 @@
 				<div class="tooltip" data-tooltip="{error}" data-placement="left"/>
 			</button>
 		{:else if task.status === 'done'}
-			<button type="submit" class="nowrap success" disabled>
-				👍
+			<button type="submit" class="nowrap success" disabled aria-busy={submitting}>
+				{submitting ? "" : '👍'}
 				<div class="tooltip" data-tooltip="Completed!"/>
 			</button>
 		{:else if isMeTaskOwner}

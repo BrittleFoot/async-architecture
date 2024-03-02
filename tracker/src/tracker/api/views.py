@@ -62,5 +62,6 @@ class TrackerReassignView(APIView):
 
     def post(self, request, *args, **kwargs):
         self.is_powerful_popug()
+
         self.task_service.reassign_tasks()
         return Response(status=status.HTTP_200_OK)

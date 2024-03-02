@@ -31,17 +31,19 @@ class UserService:
     def update_user(self, user: User, **data: dict):
         updated = False
         if username := data.pop("username", None):
-            updated = True
-            user.username = username
+            if user.username != username:
+                updated = True
+                user.username = username
 
         if password := data.pop("password", None):
             user.set_password(password)
+            user.save()
 
         if updated:
             user.save()
 
-        if roles := data.pop("roles", None):
-            updated = True
+        roles = data.pop("roles", None)
+        if roles is not None:
             user.roles.set(_roles(roles))
 
         if updated:

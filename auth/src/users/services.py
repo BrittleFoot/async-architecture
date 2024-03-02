@@ -45,6 +45,7 @@ class UserService:
         roles = data.pop("roles", None)
         if roles is not None:
             user.roles.set(_roles(roles))
+            updated = True
 
         if updated:
             serialized = UserSerializer(user).data

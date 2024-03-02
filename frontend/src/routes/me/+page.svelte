@@ -39,7 +39,7 @@
 
 <h2>Edit personal info</h2>
 
-	<UserCard user={me} {update}/>
+	<UserCard user={me} editor={me} {update}/>
 
 
 {#if meAdmin}
@@ -48,7 +48,7 @@
 
 <div class="cards">
 	{#each users as user}
-		<UserCard {user} {update}/>
+		<UserCard {user} editor={me} {update}/>
 	{/each}
 </div>
 

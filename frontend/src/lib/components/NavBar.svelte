@@ -20,9 +20,6 @@
 			<a href="/balance" aria-disabled="true">Balance</a>
 		</li>
 		<li>
-			<a href="/books">Books?</a>
-		</li>
-		<li>
 			<SignInButtons />
 		</li>
 	</ul>

@@ -1,11 +1,16 @@
+@use 'sass:color';
+
 @use '@picocss/pico/scss/pico' with (
 	$semantic-root-element: '#root',
-	$enable-semantic-container: true
+	$enable-semantic-container: true,
 );
+
+@use '@picocss/pico/scss/colors' as *;
+
 
 html {
 	overflow-y: scroll;
-	scrollbar-color: #734081 #290932;
+	scrollbar-color: color.adjust($azure-550, $alpha:-0.75) #290932;
 }
 
 .success {

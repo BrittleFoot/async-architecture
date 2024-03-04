@@ -1,5 +1,18 @@
 from enum import Enum
-from typing import TypedDict
+from typing import Callable, NamedTuple, Type, TypedDict
+
+from jirapopug.schema.message import BaseData
+
+
+class TopicKey(NamedTuple):
+    topic: str
+    event: str
+    version: str
+
+
+class TopicHander(NamedTuple):
+    schema_version: Type[BaseData]
+    func: Callable[[BaseData], None]
 
 
 class Topic(Enum):

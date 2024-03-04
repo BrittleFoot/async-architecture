@@ -10,10 +10,13 @@ class Command(BaseCommand):
     help = "Starts the Kafka consumer"
 
     def setup_logging(self):
-        logging.basicConfig(
-            level=logging.INFO,
-            format="[%(levelname)s][%(topic)s][%(event)s][%(func)s] %(message)s",
-        )
+        event_logger = logging.getLogger("")
+        event_logger.setLevel(logging.INFO)
+
+        fmt = "[%(levelname)s][%(topic)s][%(event)s:v%(version)s][%(func)s] %(message)s"
+
+        for handler in event_logger.handlers:
+            handler.setFormatter(logging.Formatter(fmt))
 
     def handle(self, *args, **options):
         self.setup_logging()
@@ -29,8 +32,8 @@ class Command(BaseCommand):
             return
 
         self.stdout.write(self.style.SUCCESS("Registered topic handlers:"))
-        for (topic, event), handler in REGISTERED_TOPIC_HANDLERS.items():
-            self.stdout.write(f"- {topic} {event}: {handler.__name__}")
+        for key, (_, func) in REGISTERED_TOPIC_HANDLERS.items():
+            self.stdout.write(f"- {key}: {func.__name__}")
 
         consumer = Consumer(
             topics=REGISTERED_TOPICS,

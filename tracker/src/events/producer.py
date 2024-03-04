@@ -1,17 +1,15 @@
-import json
 import logging
 import os
 
 from confluent_kafka import Producer as KafkaProducer
-
-from events.types import DataMessage, Topic
+from jirapopug.schema.message import BaseData, Message
 
 logger = logging.getLogger(__name__)
 
 
 class Producer:
-    def __init__(self, topic: Topic):
-        self.topic = topic.value
+    def __init__(self, name: str):
+        self.name = name
         self.kp = KafkaProducer(
             {
                 "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
@@ -23,20 +21,21 @@ class Producer:
         Triggered by poll() or flush().
         """
         if err is not None:
-            logger.warning("Message delivery failed: %s", err)
+            logger.error(f"Message delivery failed: {err}")
             return
 
-        logger.info("Message delivered to %s [%s]", msg.topic(), msg.partition())
+        logger.info(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
-    def send(self, messages: list[DataMessage]):
+    def send[T: BaseData](self, messages: list[T]):
         for event in messages:
             self.kp.poll(0)
 
-            data = json.dumps(event, ensure_ascii=False, separators=(",", ":"))
+            message = Message[T](producer=self.name, data=event)
+            raw_data = message.model_dump_json()
             self.kp.produce(
-                topic=self.topic,
-                key=event["id"],
-                value=data.encode("utf-8"),
+                topic=event.__topic__,
+                key=event.public_id,
+                value=raw_data.encode("utf-8"),
                 callback=self.delivery_report,
             )
 

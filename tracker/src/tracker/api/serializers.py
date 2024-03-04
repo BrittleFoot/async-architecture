@@ -33,20 +33,6 @@ class TaskEventSerializer(serializers.ModelSerializer):
     def get_performer(self, obj):
         return str(obj.performer.public_id)
 
-
-class TaskSimpleSerializer(TaskEventSerializer):
     class Meta:
         model = Task
-        fields = ("public_id", "summary", "status", "performer")
-
-
-class TaskUpdateSerializer(TaskEventSerializer):
-    class Meta:
-        model = Task
-        fields = ("public_id", "performer")
-
-
-class TaskCompleteSerializer(TaskEventSerializer):
-    class Meta:
-        model = Task
-        fields = ("public_id", "status", "performer", "completion_date")
+        fields = ("public_id", "summary", "status", "performer", "completion_date")

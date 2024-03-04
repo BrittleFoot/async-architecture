@@ -1,7 +1,6 @@
-from functools import partial
-
-from app.messages import Producer, Topics, UserEvents
+from app.messages import Producer
 from django.db import transaction
+from jirapopug.schema.account.v1 import AccountCreated, AccountUpdated
 
 from users.api.serializers import UserSerializer
 from users.models import User, UserRole
@@ -11,19 +10,20 @@ def _roles(roles: list):
     return UserRole.objects.filter(name__in=roles)
 
 
+def _serialize_user(user: User):
+    return UserSerializer(user).data
+
+
 class UserService:
     def __init__(self):
-        self._producer = Producer()
-        self.produce = partial(self._producer.produce, Topics.ACCOUNT)
+        self.producer = Producer()
 
     @transaction.atomic
     def create_user(self, **data: dict):
         user = User.objects.create_user(**data, is_staff=True)
 
-        serialized = UserSerializer(user).data
-
-        data = UserEvents.wrap(UserEvents.CREATED, serialized)
-        self.produce([data])
+        event = AccountCreated.model_validate(_serialize_user(user))
+        self.producer.send([event])
 
         return user
 
@@ -48,8 +48,7 @@ class UserService:
             updated = True
 
         if updated:
-            serialized = UserSerializer(user).data
-            data = UserEvents.wrap(UserEvents.UPDATED, serialized)
-            self.produce([data])
+            event = AccountUpdated.model_validate(_serialize_user(user))
+            self.producer.send([event])
 
         return user

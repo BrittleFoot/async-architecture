@@ -3,3 +3,4 @@
 aa_service_template
 .env
 **/.*_cache
+.DS_Store

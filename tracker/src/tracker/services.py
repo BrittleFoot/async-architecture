@@ -3,13 +3,11 @@ import random
 from django.db import transaction
 from django.db.models import Q
 from events.producer import Producer
-from events.types import DataMessage, TaskEvents, Topic
+from jirapopug.schema.task.v1 import TaskCompleted, TaskCreated, TaskPerformerUpdated
 from users.models import User
 
 from tracker.api.serializers import (
-    TaskCompleteSerializer,
-    TaskSimpleSerializer,
-    TaskUpdateSerializer,
+    TaskEventSerializer,
 )
 from tracker.models import Task, TaskStatus
 
@@ -24,17 +22,14 @@ def _select_performers():
 
 class TaskService:
     def __init__(self):
-        self.producer = Producer(Topic.TASK)
+        self.producer = Producer("tracker")
 
     @transaction.atomic
     def create_task(self, summary):
         performer = _select_performer()
 
         task = Task.objects.create(summary=summary, performer=performer)
-
-        self.producer.send(
-            [DataMessage.wrap(TaskEvents.COMPLETED, TaskSimpleSerializer(task).data)]
-        )
+        self.producer.send([TaskCreated.model_validate(TaskEventSerializer(task).data)])
 
         return task
 
@@ -50,9 +45,7 @@ class TaskService:
 
             if old_performer != task.performer:
                 updates.append(
-                    DataMessage.wrap(
-                        TaskEvents.PERFORMER_CHANGED, TaskUpdateSerializer(task).data
-                    )
+                    TaskPerformerUpdated.model_validate(TaskEventSerializer(task).data)
                 )
 
         Task.objects.bulk_update(current_tasks, ["performer"])
@@ -65,7 +58,5 @@ class TaskService:
         task.status = TaskStatus.DONE
         task.save()
 
-        self.producer.send(
-            [DataMessage.wrap(TaskEvents.COMPLETED, TaskCompleteSerializer(task).data)]
-        )
+        self.producer.send([TaskCompleted.model_validate(TaskEventSerializer(task).data)])
         return task

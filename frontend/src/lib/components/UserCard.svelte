@@ -115,6 +115,8 @@
         min-width: 10em;
         background-color: #1a202ccc;
         border-radius: 0.5em;
+
+        box-shadow: 0 0 0.5em 0.1em #000000aa;
     }
 
     .margin-0 {

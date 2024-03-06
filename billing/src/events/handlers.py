@@ -2,21 +2,18 @@ import logging
 from functools import wraps
 from typing import Callable, Type
 
-from jirapopug.schema import account
+from jirapopug.schema import account, task
 from jirapopug.schema.message import BaseData
+from tracker.services import TaskService
 from users.services import UserService
 
 from events.types import TopicHander, TopicKey
-from events.utils import TopicContextFilter
+from events.utils import topic_filter
 
 logger = logging.getLogger(__name__)
 
 REGISTERED_TOPICS: set[str] = set()
 REGISTERED_TOPIC_HANDLERS: dict[TopicKey, TopicHander] = {}
-
-
-topic_filter = TopicContextFilter()
-logger.addFilter(topic_filter)
 
 
 def topic_handler[T: BaseData](schema_version: Type[T]):
@@ -64,4 +61,32 @@ def handle_user_update(event: account.v1.AccountUpdated):
         public_id=event.public_id,
         username=event.username,
         roles=event.roles,
+    )
+
+
+@topic_handler(task.v1.TaskCreated)
+def handle_task_create(event: task.v1.TaskCreated):
+    TaskService().create_task(
+        public_id=event.public_id,
+        summary=event.summary,
+        performer_id=event.performer,
+    )
+
+
+@topic_handler(task.v1.TaskPerformerUpdated)
+def handle_task_update(event: task.v1.TaskPerformerUpdated):
+    TaskService().update_performer(
+        public_id=event.public_id,
+        summary=event.summary,
+        performer_id=event.performer,
+    )
+
+
+@topic_handler(task.v1.TaskCompleted)
+def handle_task_completed(event: task.v1.TaskCompleted):
+    TaskService().complete_task(
+        public_id=event.public_id,
+        summary=event.summary,
+        completion_date=event.completion_date,
+        performer_id=event.performer,
     )

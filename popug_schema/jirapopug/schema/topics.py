@@ -1,12 +1,9 @@
-
-
-
 from jirapopug.schema.message import BaseData
 
 
-class AccountBase(BaseData):
-    __topic__ = "account"
+class AuthStreamBase(BaseData):
+    __topic__ = "auth-stream"
 
 
-class TaskBase(BaseData):
-    __topic__ = "task"
+class TrackerStreamBase(BaseData):
+    __topic__ = "tracker-stream"

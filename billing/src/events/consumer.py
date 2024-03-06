@@ -81,11 +81,11 @@ class Consumer:
         handler_key = TopicKey(topic, message.event_name, message.event_version)
 
         if handler_key not in self.message_handlers:
-            """ We raise an exception here because we want the consumer to crash and restart
-            In real world scenarios, we would want to log this error and possibly
-            add it to a dead letter queue for further analysis
+            """ We raise an exception here while debug, but as soon as we are confident
+            that we have covered all the required topics, we can remove this exception
             """
-            raise KafkaException(f"No handler for event {handler_key}")
+            # raise KafkaException(f"No handler for event {handler_key}")
+            return
 
         topic_handler = self.message_handlers[handler_key]
 

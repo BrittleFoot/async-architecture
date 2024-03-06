@@ -18,6 +18,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "completion_date",
             "created",
             "modified",
+            "fee",
+            "reward",
         )
 
 
@@ -35,4 +37,12 @@ class TaskEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ("public_id", "summary", "performer", "completion_date")
+        fields = (
+            "public_id",
+            "summary",
+            "status",
+            "performer",
+            "completion_date",
+            "fee",
+            "reward",
+        )

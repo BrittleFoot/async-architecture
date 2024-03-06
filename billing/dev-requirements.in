@@ -1,0 +1,8 @@
+ruff
+
+pytest
+pytest-cov
+pytest-django
+mixer
+
+ipython

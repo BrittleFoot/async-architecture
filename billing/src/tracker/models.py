@@ -19,10 +19,8 @@ class Task(TimestampedModel):
         unique=True, editable=False, default=uuid.uuid4, db_index=True
     )
 
-    def save(self, *args, **kwargs):
-        if self.status == TaskStatus.DONE and not self.completion_date:
-            self.completion_date = make_aware(datetime.utcnow())
-        super().save(*args, **kwargs)
+    reward = models.DecimalField(max_digits=10, decimal_places=0)
+    fee = models.DecimalField(max_digits=10, decimal_places=0)
 
     def __str__(self):
         return f"Task(summary={self.summary}, performer={self.performer}, status={self.status})"

@@ -1,6 +1,8 @@
+import datetime
 import random
 
 from django.db import transaction
+from billing.services import BillingService
 from events.producer import Producer
 from jirapopug.schema.task.v1 import TaskPriceUpdated
 from users.models import User
@@ -12,12 +14,7 @@ from tracker.models import Task, TaskStatus
 class TaskService:
     def __init__(self):
         self.producer = Producer("billing")
-
-    def apply_fee(self, task: Task):
-        pass
-
-    def grant_reward(self, task: Task):
-        pass
+        self.billing_service = BillingService()
 
     def generate_task_price(self, summary: str):
         # POPUGS DONT KNOW MATH
@@ -47,7 +44,7 @@ class TaskService:
             [TaskPriceUpdated.model_validate(TaskEventSerializer(task).data)]
         )
 
-        self.apply_fee(task)
+        self.billing_service.charge_fee(task)
 
         return task
 
@@ -61,17 +58,24 @@ class TaskService:
         task.performer = performer
         task.save()
 
-        self.apply_fee(task)
+        self.billing_service.charge_fee(task)
 
         return task
 
     @transaction.atomic
-    def complete_task(self, public_id: str, summary: str, performer_id: str):
+    def complete_task(
+        self,
+        public_id: str,
+        summary: str,
+        performer_id: str,
+        completion_date: datetime.datetime,
+    ):
         task = Task.objects.filter(public_id=public_id).first()
         if not task:
             task = self.create_task(public_id, summary, performer_id)
 
         task.status = TaskStatus.COMPLETED
+        task.completion_date = completion_date
         task.save()
 
         self.grant_reward(task)

@@ -36,6 +36,7 @@ INTERNAL_APPS = [
     "users",
     "tracker",
     "events",
+    "billing",
 ]
 
 THIRD_PARTY_APPS = [

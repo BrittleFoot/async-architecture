@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from tracker.api.serializers import TaskSerializer
 from tracker.models import Task
 from tracker.services import TaskService

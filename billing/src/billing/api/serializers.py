@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from users.api.serializers import UserLightSerializer
-
 from tracker.models import Task
+from users.api.serializers import UserLightSerializer
 
 
 class TaskSerializer(serializers.ModelSerializer):

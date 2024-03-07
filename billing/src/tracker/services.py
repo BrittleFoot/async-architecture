@@ -1,8 +1,8 @@
 import datetime
 import random
 
-from django.db import transaction
 from billing.services import BillingService
+from django.db import transaction
 from events.producer import Producer
 from jirapopug.schema.task.v1 import TaskPriceUpdated
 from users.models import User

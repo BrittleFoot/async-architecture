@@ -61,6 +61,10 @@ class BillingService:
         user.balance -= task.reward
         user.save()
 
+        day = billing_cycle.day
+        day.profit += task.fee
+        day.save()
+
     @database_transaction.atomic
     def pay_reward(self, task: Task):
         billing_cycle = get_or_create_billing_cycle(task.performer)
@@ -75,6 +79,10 @@ class BillingService:
         user = task.performer
         user.balance += task.reward
         user.save()
+
+        day = billing_cycle.day
+        day.profit -= task.reward
+        day.save()
 
     def create_payment_transaction(self, user: User, cycle: BillingCycle, amount: int):
         return Payment.objects.create(

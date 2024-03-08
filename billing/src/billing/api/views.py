@@ -4,7 +4,12 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from billing.api.serializers import CalendarSerializer, DaySerializer
+from billing.api.serializers import (
+    AdminCalendarSerializer,
+    AdminDaySerializer,
+    CalendarSerializer,
+    DaySerializer,
+)
 from billing.models import Day
 from billing.services import BillingService
 
@@ -22,8 +27,12 @@ class BillingDayViewSet(CreateModelMixin, ReadOnlyModelViewSet):
         return BillingService()
 
     def get_serializer_class(self):
+        admin = is_admin(self.request.user)
         if self.request.query_params.get("calendar"):
-            return CalendarSerializer
+            return AdminCalendarSerializer if admin else CalendarSerializer
+
+        if admin:
+            return AdminDaySerializer
 
         return super().get_serializer_class()
 

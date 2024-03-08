@@ -24,6 +24,12 @@ class Day(TimestampedModel):
         blank=True,
     )
 
+    profit = models.DecimalField(
+        max_digits=10,
+        decimal_places=0,
+        default=0,
+    )
+
     def get_name(self):
         if not self.pk:
             return "Limbo Day"

@@ -65,6 +65,11 @@ class CalendarSerializer(serializers.ModelSerializer):
         )
 
 
+class AdminCalendarSerializer(CalendarSerializer):
+    class Meta(CalendarSerializer.Meta):
+        fields = CalendarSerializer.Meta.fields + ("profit",)
+
+
 class DaySerializer(serializers.ModelSerializer):
     billing_cycles = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
@@ -86,3 +91,8 @@ class DaySerializer(serializers.ModelSerializer):
             "name",
             "billing_cycles",
         )
+
+
+class AdminDaySerializer(DaySerializer):
+    class Meta(DaySerializer.Meta):
+        fields = DaySerializer.Meta.fields + ("profit",)

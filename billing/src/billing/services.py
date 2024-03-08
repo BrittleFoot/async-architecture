@@ -57,6 +57,9 @@ class BillingService:
             credit=task.fee,
             comment=f"Fee for task {task}",
         )
+        user = task.performer
+        user.balance -= task.reward
+        user.save()
 
     @database_transaction.atomic
     def pay_reward(self, task: Task):
@@ -65,10 +68,13 @@ class BillingService:
         Transaction.objects.create(
             user=task.performer,
             billing_cycle=billing_cycle,
-            type=TransactionType.PAYMENT,
+            type=TransactionType.EARNING,
             debit=task.reward,
             comment=f"Reward for task {task}",
         )
+        user = task.performer
+        user.balance += task.reward
+        user.save()
 
     def create_payment_transaction(self, user: User, cycle: BillingCycle, amount: int):
         return Payment.objects.create(
@@ -109,9 +115,12 @@ class BillingService:
                 user=user,
                 billing_cycle=new_cycle,
                 type=TransactionType.BAD_LUCK,
-                debit=amount,
+                credit=abs(amount),
                 comment=f"Debt from previous cycle {cycle.get_name()}",
             )
+
+        user.balance = amount
+        user.save()
 
     def end_day(self):
         last_day = get_or_create_last_day()
@@ -120,3 +129,5 @@ class BillingService:
         billing_cycles = get_active_billing_cycles()
         for billing_cycle in billing_cycles:
             self.end_billing_cycle(new_day, billing_cycle)
+
+        return new_day

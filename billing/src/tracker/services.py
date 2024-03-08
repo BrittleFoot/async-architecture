@@ -74,10 +74,10 @@ class TaskService:
         if not task:
             task = self.create_task(public_id, summary, performer_id)
 
-        task.status = TaskStatus.COMPLETED
+        task.status = TaskStatus.DONE
         task.completion_date = completion_date
         task.save()
 
-        self.grant_reward(task)
+        self.billing_service.pay_reward(task)
 
         return task

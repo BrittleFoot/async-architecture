@@ -2,6 +2,7 @@
 	import { BillingService, type BillingCycle, type Day, type DayLight } from '$lib/api/billing';
 	import UserBillingCycle from '$lib/components/UserBillingCycle.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import Pyro from '$lib/components/Pyro.svelte';
 
 	export let data;
 
@@ -27,9 +28,6 @@
 	function netBalance(billingCycle: BillingCycle) {
 		let balance = 0;
 		for (const transaction of billingCycle.transactions) {
-			if (transaction.comment.indexOf('Woden') !== -1) {
-				console.log(balance, transaction.credit, transaction.debit);
-			}
 			if (transaction.type !== 'payment') {
 				balance -= parseInt(transaction.credit);
 				balance += parseInt(transaction.debit);
@@ -42,6 +40,17 @@
 		await billing.endDay();
 		daysPromise = getDays();
 	}
+
+    let pyroHidden = true;
+    async function celebrate() {
+        pyroHidden = false;
+        await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                pyroHidden = true;
+                resolve(0);
+            }, 3000);
+        });
+    }
 </script>
 
 <h1>Balance</h1>
@@ -74,6 +83,10 @@
 				<UserBillingCycle billingCycle={day.billingCycles[0]} />
 			</div>
 		{:else}
+            <h3>Company Profit</h3>
+            <Button value={"🥳 " + (day.profit ?? "Imformation Unavailable") + " 🥳"} onClick={celebrate}/>
+            <Pyro hide={pyroHidden}/>
+            <p></p>
 			<h3>Performers</h3>
 			{#each day.billingCycles as billingCycle (billingCycle.publicId)}
 				<details open>

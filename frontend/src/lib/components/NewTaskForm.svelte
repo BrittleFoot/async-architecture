@@ -13,16 +13,16 @@
 	}
 
 	function suggestId() {
-		let noun = faker.company.buzzNoun()
+		let noun = faker.company.buzzNoun();
 		while (noun.length > 9) {
-			noun = faker.company.buzzNoun()
+			noun = faker.company.buzzNoun();
 		}
 		return noun.toUpperCase() + '-' + faker.number.int({ min: 1, max: 999 });
 	}
 
 	export let onTaskCreated: (taskId: string, summary: string) => Promise<void>;
-	let summary = "";
-	let taskId = "";
+	let summary = '';
+	let taskId = '';
 	let inputError: boolean | null = null;
 	let disabled = false;
 	$: text = disabled ? 'Creating' : 'Create a Task';

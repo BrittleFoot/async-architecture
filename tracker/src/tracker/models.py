@@ -1,9 +1,8 @@
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from app.models import TimestampedModel
 from django.db import models
-from django.utils.timezone import make_aware
 from users.models import User
 
 
@@ -13,6 +12,7 @@ class TaskStatus(models.TextChoices):
 
 
 class Task(TimestampedModel):
+    task_id = models.CharField(max_length=64, null=True, blank=True)
     summary = models.CharField(max_length=255)
     performer = models.ForeignKey(User, on_delete=models.PROTECT, related_name="tasks")
     status = models.CharField(max_length=255, choices=TaskStatus.choices, default="new")
@@ -23,7 +23,7 @@ class Task(TimestampedModel):
 
     def save(self, *args, **kwargs):
         if self.status == TaskStatus.DONE and not self.completion_date:
-            self.completion_date = make_aware(datetime.utcnow())
+            self.completion_date = datetime.now(UTC)
         super().save(*args, **kwargs)
 
     def __str__(self):

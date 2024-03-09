@@ -7,6 +7,7 @@ from billing.models import (
     BillingCycleStatus,
     Day,
     Payment,
+    PaymentStatus,
     Transaction,
     TransactionType,
 )
@@ -57,8 +58,9 @@ class BillingService:
             credit=task.fee,
             comment=f"Fee for task {task}",
         )
+
         user = task.performer
-        user.balance -= task.reward
+        user.balance -= task.fee
         user.save()
 
         day = billing_cycle.day
@@ -76,6 +78,7 @@ class BillingService:
             debit=task.reward,
             comment=f"Reward for task {task}",
         )
+
         user = task.performer
         user.balance += task.reward
         user.save()
@@ -86,6 +89,11 @@ class BillingService:
 
     def create_payment_transaction(self, user: User, cycle: BillingCycle, amount: int):
         return Payment.objects.create(
+            # Assume that the payment is processed immediately,
+            # Actual implementation may vary, but includes
+            #   - queue for payment objects, then set status to "processed"
+            #   - after that - substract the balance from the user
+            status=PaymentStatus.PROCESSED,
             user=user,
             billing_cycle=cycle,
             amount=amount,

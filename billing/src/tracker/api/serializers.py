@@ -46,3 +46,13 @@ class TaskEventSerializer(serializers.ModelSerializer):
             "fee",
             "reward",
         )
+
+
+class TaskSerializerV2(TaskSerializer):
+    class Meta(TaskSerializer.Meta):
+        fields = TaskSerializer.Meta.fields + ("task_id",)
+
+
+class TaskEventSerializerV2(TaskEventSerializer):
+    class Meta(TaskEventSerializer.Meta):
+        fields = TaskEventSerializer.Meta.fields + ("task_id",)

@@ -4,7 +4,7 @@ from typing import Callable, Type
 
 from jirapopug.schema import account, task
 from jirapopug.schema.message import BaseData
-from tracker.services import TaskService
+from tracker.services import TaskService, TaskServiceV2
 from users.services import UserService
 
 from events.types import TopicHander, TopicKey
@@ -86,6 +86,37 @@ def handle_task_update(event: task.v1.TaskPerformerUpdated):
 def handle_task_completed(event: task.v1.TaskCompleted):
     TaskService().complete_task(
         public_id=event.public_id,
+        summary=event.summary,
+        completion_date=event.completion_date,
+        performer_id=event.performer,
+    )
+
+
+@topic_handler(task.v2.TaskCreated)
+def handle_task_create_v2(event: task.v2.TaskCreated):
+    TaskServiceV2().create_task(
+        public_id=event.public_id,
+        task_id=event.task_id,
+        summary=event.summary,
+        performer_id=event.performer,
+    )
+
+
+@topic_handler(task.v2.TaskPerformerUpdated)
+def handle_task_update_v2(event: task.v2.TaskPerformerUpdated):
+    TaskServiceV2().update_performer(
+        public_id=event.public_id,
+        task_id=event.task_id,
+        summary=event.summary,
+        performer_id=event.performer,
+    )
+
+
+@topic_handler(task.v2.TaskCompleted)
+def handle_task_completed_v2(event: task.v2.TaskCompleted):
+    TaskServiceV2().complete_task(
+        public_id=event.public_id,
+        task_id=event.task_id,
         summary=event.summary,
         completion_date=event.completion_date,
         performer_id=event.performer,

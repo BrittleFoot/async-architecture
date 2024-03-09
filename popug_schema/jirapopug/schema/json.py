@@ -9,16 +9,10 @@ DataType = (
     | task.v1.TaskCompleted
     | task.v1.TaskCreated
     | task.v1.TaskPerformerUpdated
+    | task.v2.TaskCreated
+    | task.v2.TaskPerformerUpdated
+    | task.v2.TaskCompleted
 )
-
-
-Types = [
-    account.v1.AccountCreated,
-    account.v1.AccountUpdated,
-    task.v1.TaskCompleted,
-    task.v1.TaskCreated,
-    task.v1.TaskPerformerUpdated,
-]
 
 
 def get_json_schema(**dumps_kwargs):

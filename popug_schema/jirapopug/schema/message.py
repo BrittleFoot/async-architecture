@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class BaseSchema(BaseModel):
@@ -44,15 +44,16 @@ class Message[T: BaseData | dict](BaseSchema):
     event_name: str = ""
     event_version: int = 0
 
-    @validator("event_name", pre=False, always=True)
-    def set_event_name(cls, v, values, **kwargs):
-        if v:
-            return v
-        return values["data"].__event_name__
+    @model_validator(mode="after")
+    def set_event_name_version(self):
+        if isinstance(self.data, dict):
+            if not self.event_name and self.data:
+                self.event_id = self.data.get("__event_name__", "")
+            if not self.event_version and self.data:
+                self.event_version = self.data.get("__event_version__", 0)
 
-    @validator("event_version", pre=False, always=True)
-    def set_event_version(cls, v, values, **kwargs):
-        if v:
-            return v
+        if isinstance(self.data, BaseData):
+            self.event_name = self.data.__event_name__
+            self.event_version = self.data.__event_version__
 
-        return values["data"].__event_version__
+        return self

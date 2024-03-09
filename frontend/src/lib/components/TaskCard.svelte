@@ -34,8 +34,9 @@
 <form on:submit|preventDefault={handleSubmit} class:optimistic={task.optimistic}>
 	<input type="hidden" name="id" value={task.id} />
 	<fieldset role="group">
-		<input type="text" readonly value={task.summary} aria-label="Read-only input" />
-		<input type="text" class="divider" readonly value="🦜" aria-label="Read-only input" />
+		<input type="text" class="task-id" readonly value={task.taskId || "GENERAL"}/>
+		<input type="text" class="summary" readonly value={task.summary}/>
+		<input type="text" class="divider" readonly value="🦜"/>
 		<input
 			type="performer"
 			readonly
@@ -101,5 +102,14 @@
 
 	.optimistic {
 		opacity: 0.5;
+	}
+
+	.task-id {
+		width: 10em;
+		text-align: center;
+	}
+
+	.summary {
+		text-overflow: ellipsis;
 	}
 </style>

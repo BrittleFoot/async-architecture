@@ -3,6 +3,7 @@ import ApiClient from '$lib';
 
 export type Task = {
 	id: number;
+	taskId: string;
 	summary: string;
 	status: string;
 	performer: TaskUser;
@@ -25,7 +26,7 @@ export class TrackerService {
 	}
 
 	async getTasks(hideCompleted?: boolean): Promise<Task[]> {
-		var url = '/api/v1/tasks/';
+		var url = '/api/v2/tasks/';
 		if (hideCompleted) {
 			url += '?status=new';
 		}
@@ -33,28 +34,18 @@ export class TrackerService {
 	}
 
 	async createTask(summary: string): Promise<Task> {
-		return await this.api.request<Task>('/api/v1/tasks/', {
-			method: 'POST',
-			body: JSON.stringify({ summary }),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		return await this.api.jsonRequest<Task>('POST', '/api/v1/tasks/', { summary });
+	}
+
+	async createTaskV2(taskId: string, summary: string): Promise<Task> {
+		return await this.api.jsonRequest<Task>('POST', '/api/v2/tasks/', { taskId, summary });
 	}
 
 	async completeTask(task: Task): Promise<Task> {
-		return await this.api.request<Task>(`/api/v1/tasks/${task.id}/`, {
-			method: 'PUT',
-			body: '{}',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		return await this.api.jsonRequest<Task>('PUT', `/api/v2/tasks/${task.id}/`, {});
 	}
 
 	async reassignTasks(): Promise<void> {
-		return await this.api.request<void>(`/api/v1/tasks/reassign/`, {
-			method: 'POST'
-		});
+		return await this.api.jsonRequest<void>('POST', `/api/v1/tasks/reassign/`, {});
 	}
 }

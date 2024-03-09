@@ -57,7 +57,7 @@ class BillingDayViewSet(CreateModelMixin, ReadOnlyModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if not is_admin(request.user):
-            return PermissionDenied("Only admins can end the day.")
+            raise PermissionDenied("Only admins can end the day.")
         new_day = self.billing_service.end_day()
         self.kwargs["pk"] = new_day.pk
         return self.retrieve(request, *args, **kwargs)

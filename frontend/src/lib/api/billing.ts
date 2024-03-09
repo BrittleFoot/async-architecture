@@ -66,6 +66,6 @@ export class BillingService {
 	}
 
 	async endDay(): Promise<Day> {
-		return await this.api.jsonRequest<Day>('POST', `/api/v1/billing/day`, {});
+		return await this.api.jsonRequest<Day>('POST', `/api/v1/billing/day/`, {});
 	}
 }

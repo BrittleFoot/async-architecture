@@ -17,7 +17,7 @@
 			<a href="/tracker">Tracker</a>
 		</li>
 		<li>
-			<a href="/balance" aria-disabled="true">Balance</a>
+			<a href="/balance">Balance</a>
 		</li>
 		<li>
 			<SignInButtons />

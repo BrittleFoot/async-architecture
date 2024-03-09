@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { BillingService, type BillingCycle, type Day, type DayLight } from '$lib/api/billing';
 	import UserBillingCycle from '$lib/components/UserBillingCycle.svelte';
-	import { onMount } from 'svelte';
+	import Button from '$lib/components/Button.svelte';
 
 	export let data;
 
@@ -10,14 +10,15 @@
 
 	const billing = new BillingService(data.tokenInfo.accessToken);
 
-	let days: DayLight[] = [];
+	let daysPromise: Promise<DayLight[]> = getDays();
 	let selectedDay: DayLight | null = null;
 	$: dayValue = selectedDay && fetchDayInfo(selectedDay.id);
 
-	onMount(async () => {
-		days = await billing.getDays();
+	async function getDays() {
+		let days = await billing.getDays();
 		selectedDay = days[days.length - 1];
-	});
+		return days;
+	}
 
 	async function fetchDayInfo(id: number): Promise<Day> {
 		return await billing.getDay(id);
@@ -36,17 +37,28 @@
 		}
 		return balance;
 	}
+
+	async function endDay() {
+		await billing.endDay();
+		daysPromise = getDays();
+	}
 </script>
 
 <h1>Balance</h1>
 
-{#if days}
+{#await daysPromise}
+	<select>
+		<option selected aria-busy="true">Loading...</option>
+	</select>
+{:then days}
 	<select bind:value={selectedDay}>
 		{#each days as day (day.id)}
 			<option value={day}>{day.name}</option>
 		{/each}
 	</select>
-{/if}
+{:catch error}
+	<pre aria-invalid="true">{error.message}</pre>
+{/await}
 
 {#await dayValue}
 	<p aria-busy="true">Loading...</p>
@@ -57,12 +69,14 @@
 				<span>{netBalance(day.billingCycles[0]) >= 0 ? '🔥' : '🥶'}</span>
 				<span>{day.billingCycles[0].user.username}, </span>
 				<span>{netBalance(day.billingCycles[0])}</span>
-				<UserBillingCycle billingCycle={day.billingCycles[0]} />
 			</h2>
+			<div class="single-balance">
+				<UserBillingCycle billingCycle={day.billingCycles[0]} />
+			</div>
 		{:else}
 			<h3>Performers</h3>
 			{#each day.billingCycles as billingCycle (billingCycle.publicId)}
-				<details>
+				<details open>
 					<summary>
 						<span>{netBalance(billingCycle) >= 0 ? '🔥' : '🥶'}</span>
 						<span>{billingCycle.user.username}, </span>
@@ -77,11 +91,25 @@
 	<pre aria-invalid="true">{error.message}</pre>
 {/await}
 
+{#if meAdmin}
+	<h2>Time Machine</h2>
+	<Button onClick={endDay} value={'End Day'} />
+{/if}
+
 <style>
 	details {
 		border-radius: 6px;
-		background-color: #1a202cee;
+		background-color: transparent;
 		padding: 1em;
 		border: 1px solid #99999933;
+		background-image: linear-gradient(to bottom, #313f5bee 0%, #1c212ce9 2em);
+	}
+
+	.single-balance {
+		border-radius: 6px;
+		background-color: transparent;
+		padding: 1em;
+		border: 1px solid #99999933;
+		background-image: linear-gradient(to bottom, #313f5bee 0%, #1c212ce9 2em);
 	}
 </style>

@@ -6,7 +6,9 @@
 	}
 
 	function suggestTask() {
-		return capitalize(faker.company.buzzVerb()) + ' a ' + faker.company.catchPhrase().toLowerCase() + '!';
+		return (
+			capitalize(faker.company.buzzVerb()) + ' a ' + faker.company.catchPhrase().toLowerCase() + '!'
+		);
 	}
 
 	export let onTaskCreated: (summary: string) => Promise<void>;

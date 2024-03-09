@@ -35,7 +35,7 @@ class Day(TimestampedModel):
             return "Limbo Day"
         week, day = divmod(self.pk, 7)
 
-        return f"[Week {week} Day {day}, {WEEKDAYS[day]}]"
+        return f"Week {week}, Day {day}, {WEEKDAYS[day]}"
 
     def __str__(self):
         return f"Day(created={self.created})"

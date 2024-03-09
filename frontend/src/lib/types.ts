@@ -1,4 +1,4 @@
-type UserRole = "admin" | "manager" | "performer";
+type UserRole = 'admin' | 'manager' | 'performer';
 
 type User = {
 	id: string;
@@ -8,8 +8,6 @@ type User = {
 	roles: UserRole[];
 	publicId: string;
 };
-
-
 
 type UserEdit = {
 	id: string;

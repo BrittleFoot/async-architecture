@@ -45,7 +45,7 @@ class BillingDayViewSet(CreateModelMixin, ReadOnlyModelViewSet):
                 "billing_cycles__user",
                 "billing_cycles__payments",
             )
-            .order_by("-created")
+            .order_by("created")
         )
 
     def get_serializer_context(self):

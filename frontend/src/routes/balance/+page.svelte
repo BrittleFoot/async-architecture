@@ -1,2 +1,87 @@
+<script lang="ts">
+	import { BillingService, type BillingCycle, type Day, type DayLight } from '$lib/api/billing';
+	import UserBillingCycle from '$lib/components/UserBillingCycle.svelte';
+	import { onMount } from 'svelte';
+
+	export let data;
+
+	const me = data.user;
+	const meAdmin = me?.roles.includes('admin') ?? false;
+
+	const billing = new BillingService(data.tokenInfo.accessToken);
+
+	let days: DayLight[] = [];
+	let selectedDay: DayLight | null = null;
+	$: dayValue = selectedDay && fetchDayInfo(selectedDay.id);
+
+	onMount(async () => {
+		days = await billing.getDays();
+		selectedDay = days[days.length - 1];
+	});
+
+	async function fetchDayInfo(id: number): Promise<Day> {
+		return await billing.getDay(id);
+	}
+
+	function netBalance(billingCycle: BillingCycle) {
+		let balance = 0;
+		for (const transaction of billingCycle.transactions) {
+			if (transaction.comment.indexOf('Woden') !== -1) {
+				console.log(balance, transaction.credit, transaction.debit);
+			}
+			if (transaction.type !== 'payment') {
+				balance -= parseInt(transaction.credit);
+				balance += parseInt(transaction.debit);
+			}
+		}
+		return balance;
+	}
+</script>
+
 <h1>Balance</h1>
-<p>Nothing here yet</p>
+
+{#if days}
+	<select bind:value={selectedDay}>
+		{#each days as day (day.id)}
+			<option value={day}>{day.name}</option>
+		{/each}
+	</select>
+{/if}
+
+{#await dayValue}
+	<p aria-busy="true">Loading...</p>
+{:then day}
+	{#if day}
+		{#if !meAdmin}
+			<h2>
+				<span>{netBalance(day.billingCycles[0]) >= 0 ? '🔥' : '🥶'}</span>
+				<span>{day.billingCycles[0].user.username}, </span>
+				<span>{netBalance(day.billingCycles[0])}</span>
+				<UserBillingCycle billingCycle={day.billingCycles[0]} />
+			</h2>
+		{:else}
+			<h3>Performers</h3>
+			{#each day.billingCycles as billingCycle (billingCycle.publicId)}
+				<details>
+					<summary>
+						<span>{netBalance(billingCycle) >= 0 ? '🔥' : '🥶'}</span>
+						<span>{billingCycle.user.username}, </span>
+						<span>{netBalance(billingCycle)}</span>
+					</summary>
+					<UserBillingCycle {billingCycle} />
+				</details>
+			{/each}
+		{/if}
+	{/if}
+{:catch error}
+	<pre aria-invalid="true">{error.message}</pre>
+{/await}
+
+<style>
+	details {
+		border-radius: 6px;
+		background-color: #1a202cee;
+		padding: 1em;
+		border: 1px solid #99999933;
+	}
+</style>

@@ -37,7 +37,7 @@ type ApiClientParams = {
 };
 
 class ApiClient {
-	constructor(private params: ApiClientParams) { }
+	constructor(private params: ApiClientParams) {}
 
 	async request<T>(url: string, options?: RequestInit): Promise<T> {
 		try {
@@ -48,7 +48,12 @@ class ApiClient {
 		}
 	}
 
-	async jsonRequest<T>(method: "PUT" | "POST", url: string, body: any, options?: RequestInit): Promise<T> {
+	async jsonRequest<T>(
+		method: 'PUT' | 'POST',
+		url: string,
+		body: any,
+		options?: RequestInit
+	): Promise<T> {
 		return await this.request(url, {
 			...options,
 			method: method,
@@ -56,7 +61,7 @@ class ApiClient {
 				...options?.headers,
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(body),
+			body: JSON.stringify(body)
 		});
 	}
 

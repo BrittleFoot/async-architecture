@@ -25,8 +25,7 @@
 	onMount(async () => {
 		try {
 			await refreshTasks();
-		}
-		finally {
+		} finally {
 			firstLoad = false;
 		}
 	});

@@ -61,6 +61,11 @@ export class BillingService {
 		return await this.api.request<DayLight[]>(url);
 	}
 
+	async getFullDays(): Promise<Day[]> {
+		var url = '/api/v1/billing/day/';
+		return await this.api.request<Day[]>(url);
+	}
+
 	async getDay(id: number): Promise<Day> {
 		return await this.api.request<Day>(`/api/v1/billing/day/${id}/`);
 	}

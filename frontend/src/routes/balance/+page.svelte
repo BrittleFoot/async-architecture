@@ -11,19 +11,38 @@
 
 	const billing = new BillingService(data.tokenInfo.accessToken);
 
-	let daysPromise: Promise<DayLight[]> = getDays();
-	let selectedDay: DayLight | null = null;
-	$: dayValue = selectedDay && fetchDayInfo(selectedDay.id);
+    // Fetch one by one, for cpu instead of network performance's sake
 
-	async function getDays() {
-		let days = await billing.getDays();
-		selectedDay = days[days.length - 1];
-		return days;
-	}
+	// let daysPromise: Promise<DayLight[]> = getDays();
+	// $: dayValue = selectedDay && fetchDayInfo(selectedDay.id);
+	// let selectedDay: DayLight | null = null;
+	// $: dayValue = selectedDay && fetchDayInfo(selectedDay.id);
 
-	async function fetchDayInfo(id: number): Promise<Day> {
-		return await billing.getDay(id);
-	}
+    // async function getDays() {
+    // 	let days = await billing.getDays();
+    // 	selectedDay = days[days.length - 1];
+    // 	return days;
+    // }
+
+	// async function fetchDayInfo(id: number): Promise<Day> {
+	// 	return await billing.getDay(id);
+	// }
+
+	let daysPromise: Promise<Day[]> = getDays();
+	let selectedDay: Day | null = null;
+
+	$: dayValue = selectedDay && getDayInfo(selectedDay);
+
+    async function getDayInfo(day: Day) {
+        return day;
+    }
+
+    async function getDays() {
+        let days = await billing.getFullDays();
+        selectedDay = days[days.length - 1];
+        return days;
+
+    }
 
 	function netBalance(billingCycle: BillingCycle) {
 		let balance = 0;

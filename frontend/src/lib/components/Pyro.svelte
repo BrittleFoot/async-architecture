@@ -6,7 +6,7 @@
 
 
 
-<div class="pyro hide" class:hide-in={hide === false} class:hide-out={hide === true}>
+<div class="hide pyro" class:hide-in={hide === false} class:hide-out={hide === true}>
   <div class="before"></div>
   <div class="after"></div>
 </div>
@@ -36,6 +36,8 @@
 $particles: 100;
 $width: 500;
 $height: 500;
+$particle-color: 50;
+
 
 // Create the explosion...
 $box-shadow: ();
@@ -44,7 +46,7 @@ $box-shadow2: ();
   $box-shadow: $box-shadow,
                random($width)-$width / 2 + px
                random($height)-$height / 1.2 + px
-               hsl(random(360), 100, 50);
+               hsl(random(360), 100, $particle-color);
   $box-shadow2: $box-shadow2, 0 0 #fff
 }
 @mixin keyframes ($animationName) {

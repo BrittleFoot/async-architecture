@@ -45,8 +45,9 @@ export interface DayLight {
 }
 
 export interface UserLight {
-	publicId: number;
+	publicId: string;
 	username: string;
+	balance: string; // decimal
 }
 
 export class BillingService {

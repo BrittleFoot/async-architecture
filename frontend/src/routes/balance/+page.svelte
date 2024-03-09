@@ -47,13 +47,19 @@
 	function netBalance(billingCycle: BillingCycle) {
 		let balance = 0;
 		for (const transaction of billingCycle.transactions) {
-			if (transaction.type !== 'payment') {
+			if (transaction.type !== 'payment' && transaction.type !== 'bad_luck') {
 				balance -= parseInt(transaction.credit);
 				balance += parseInt(transaction.debit);
 			}
 		}
 		return balance;
 	}
+
+    function balanceIndicator(billingCycle: BillingCycle) {
+        let net = netBalance(billingCycle);
+        if (net === 0) return '🤷';
+        return net >= 0 ? '🔥' : '🥶';
+    }
 
 	async function endDay() {
 		await billing.endDay();
@@ -94,9 +100,15 @@
 	{#if day}
 		{#if !meAdmin}
 			<h2>
-				<span>{netBalance(day.billingCycles[0]) >= 0 ? '🔥' : '🥶'}</span>
-				<span>{day.billingCycles[0].user.username}, </span>
-				<span>{netBalance(day.billingCycles[0])}</span>
+				<span>{balanceIndicator(day.billingCycles[0])}</span>
+				<span>{day.billingCycles[0].user.username}</span>
+                <small>
+                    <span>·</span>
+                    <b>{netBalance(day.billingCycles[0])}</b>
+                    <span> today balance · </span>
+                    <b>{day.billingCycles[0].user.balance}</b>
+                    <span> total</span>
+                    </small>
 			</h2>
 			<div class="single-balance">
 				<UserBillingCycle billingCycle={day.billingCycles[0]} />
@@ -108,11 +120,17 @@
             <p></p>
 			<h3>Performers</h3>
 			{#each day.billingCycles as billingCycle (billingCycle.publicId)}
-				<details open>
+				<details open={me?.publicId === billingCycle.user.publicId}>
 					<summary>
-						<span>{netBalance(billingCycle) >= 0 ? '🔥' : '🥶'}</span>
-						<span>{billingCycle.user.username}, </span>
-						<span>{netBalance(billingCycle)}</span>
+						<span>{balanceIndicator(billingCycle)}</span>
+						<span>{billingCycle.user.username}</span>
+                        <small>
+                            <span>·</span>
+                            <b>{netBalance(billingCycle)}</b>
+                            <span> today balance · </span>
+                            <b>{billingCycle.user.balance}</b>
+                            <span> total</span>
+                        </small>
 					</summary>
 					<UserBillingCycle {billingCycle} />
 				</details>

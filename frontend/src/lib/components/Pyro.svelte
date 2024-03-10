@@ -9,6 +9,8 @@
 </div>
 
 <style lang="scss">
+	@use 'sass:math';
+
 	.hide {
 		opacity: 0;
 		visibility: hidden;
@@ -34,7 +36,6 @@
 	$particles: 100;
 	$width: 500;
 	$height: 500;
-	$particle-color: 50;
 
 	// Create the explosion...
 	$box-shadow: ();
@@ -42,13 +43,9 @@
 	@for $i from 0 through $particles {
 		$box-shadow:
 			$box-shadow,
-			random($width)-$width /
-				2 +
-				px
-				random($height)-$height /
-				1.2 +
-				px
-				hsl(random(360), 100, $particle-color);
+			random($width)*1px - math.div($width, 2)*1px
+			random($height)*1px - math.div($height,1.2)*1px
+			hsl(random(360), 100%, 50%);
 		$box-shadow2:
 			$box-shadow2,
 			0 0 #fff;

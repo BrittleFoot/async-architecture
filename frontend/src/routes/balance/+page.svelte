@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { BillingService, type BillingCycle, type Day, type DayLight } from '$lib/api/billing';
+	import { BillingService, type BillingCycle, type Day } from '$lib/api/billing';
 	import UserBillingCycle from '$lib/components/UserBillingCycle.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Pyro from '$lib/components/Pyro.svelte';
+	import { onMount } from 'svelte';
 
 	export let data;
 
@@ -28,10 +29,14 @@
 	// 	return await billing.getDay(id);
 	// }
 
-	let daysPromise: Promise<Day[]> = getDays();
+	let daysPromise: Promise<Day[]> = Promise.resolve([]);
 	let selectedDay: Day | null = null;
 
 	$: dayValue = selectedDay && getDayInfo(selectedDay);
+
+	onMount(async () => {
+		daysPromise = getDays();
+	});
 
 	async function getDayInfo(day: Day) {
 		return day;

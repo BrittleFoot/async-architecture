@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,14 +18,41 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Task",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
                 ("modified", models.DateTimeField(blank=True, db_index=True, null=True)),
                 ("summary", models.CharField(max_length=255)),
-                ("status", models.CharField(choices=[("new", "New"), ("done", "Done")], default="new", max_length=255)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("new", "New"), ("done", "Done")],
+                        default="new",
+                        max_length=255,
+                    ),
+                ),
                 ("completion_date", models.DateTimeField(blank=True, null=True)),
-                ("public_id", models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)),
-                ("performer", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="tasks", to=settings.AUTH_USER_MODEL)),
+                (
+                    "public_id",
+                    models.UUIDField(
+                        db_index=True, default=uuid.uuid4, editable=False, unique=True
+                    ),
+                ),
+                (
+                    "performer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="tasks",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 "abstract": False,

@@ -7,6 +7,7 @@ from users.models import User, UserRole
 class UserRoleAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     pass

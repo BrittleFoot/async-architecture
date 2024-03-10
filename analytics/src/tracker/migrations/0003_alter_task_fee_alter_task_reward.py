@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tracker', '0002_initial'),
+        ("tracker", "0002_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='fee',
+            model_name="task",
+            name="fee",
             field=models.DecimalField(decimal_places=0, default=0, max_digits=10),
         ),
         migrations.AlterField(
-            model_name='task',
-            name='reward',
+            model_name="task",
+            name="reward",
             field=models.DecimalField(decimal_places=0, default=0, max_digits=10),
         ),
     ]

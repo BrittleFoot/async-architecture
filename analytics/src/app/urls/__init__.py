@@ -7,9 +7,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path(
         "openapi/",
-        get_schema_view(
-            title="", description="OpenAPI schema", version="1.0.0"
-        ),
+        get_schema_view(title="", description="OpenAPI schema", version="1.0.0"),
         name="openapi-schema",
     ),
 ]

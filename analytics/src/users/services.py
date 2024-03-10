@@ -23,7 +23,6 @@ class UserService:
 
     @transaction.atomic
     def update_user(self, public_id: str, username: str, roles: list[str]):
-
         user = User.objects.filter(public_id=public_id).first()
         if not user:
             return self.create_user(public_id, username, roles)

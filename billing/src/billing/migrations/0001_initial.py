@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,10 +18,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Day",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
                 ("modified", models.DateTimeField(blank=True, db_index=True, null=True)),
-                ("previous", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name="next", to="billing.day")),
+                (
+                    "previous",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="next",
+                        to="billing.day",
+                    ),
+                ),
             ],
             options={
                 "abstract": False,
@@ -31,14 +47,48 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="BillingCycle",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
                 ("modified", models.DateTimeField(blank=True, db_index=True, null=True)),
-                ("public_id", models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)),
-                ("status", models.CharField(choices=[("active", "Active"), ("closed", "Closed")], default="active", max_length=255)),
+                (
+                    "public_id",
+                    models.UUIDField(
+                        db_index=True, default=uuid.uuid4, editable=False, unique=True
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("active", "Active"), ("closed", "Closed")],
+                        default="active",
+                        max_length=255,
+                    ),
+                ),
                 ("close_date", models.DateTimeField(blank=True, null=True)),
-                ("user", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="billing_cycles", to=settings.AUTH_USER_MODEL)),
-                ("day", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="billing_cycles", to="billing.day")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="billing_cycles",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "day",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="billing_cycles",
+                        to="billing.day",
+                    ),
+                ),
             ],
             options={
                 "abstract": False,
@@ -47,16 +97,63 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Transaction",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
                 ("modified", models.DateTimeField(blank=True, db_index=True, null=True)),
-                ("public_id", models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)),
-                ("type", models.CharField(choices=[("bad_luck", "Bad Luck"), ("earning", "Earning"), ("payment", "Payment")], max_length=255)),
+                (
+                    "public_id",
+                    models.UUIDField(
+                        db_index=True, default=uuid.uuid4, editable=False, unique=True
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("bad_luck", "Bad Luck"),
+                            ("earning", "Earning"),
+                            ("payment", "Payment"),
+                        ],
+                        max_length=255,
+                    ),
+                ),
                 ("comment", models.TextField()),
-                ("credit", models.DecimalField(decimal_places=0, default=0, editable=False, max_digits=10)),
-                ("debit", models.DecimalField(decimal_places=0, default=0, editable=False, max_digits=10)),
-                ("billing_cycle", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="transactions", to="billing.billingcycle")),
-                ("user", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="transactions", to=settings.AUTH_USER_MODEL)),
+                (
+                    "credit",
+                    models.DecimalField(
+                        decimal_places=0, default=0, editable=False, max_digits=10
+                    ),
+                ),
+                (
+                    "debit",
+                    models.DecimalField(
+                        decimal_places=0, default=0, editable=False, max_digits=10
+                    ),
+                ),
+                (
+                    "billing_cycle",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="transactions",
+                        to="billing.billingcycle",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="transactions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 "abstract": False,
@@ -65,15 +162,61 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Payment",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created", models.DateTimeField(auto_now_add=True, db_index=True)),
                 ("modified", models.DateTimeField(blank=True, db_index=True, null=True)),
-                ("public_id", models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)),
-                ("amount", models.DecimalField(decimal_places=0, default=0, editable=False, max_digits=10)),
-                ("status", models.CharField(choices=[("pending", "Pending"), ("processed", "Processed")], default="pending", max_length=255)),
-                ("billing_cycle", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="payments", to="billing.billingcycle")),
-                ("user", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="payments", to=settings.AUTH_USER_MODEL)),
-                ("transaction", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="payments", to="billing.transaction")),
+                (
+                    "public_id",
+                    models.UUIDField(
+                        db_index=True, default=uuid.uuid4, editable=False, unique=True
+                    ),
+                ),
+                (
+                    "amount",
+                    models.DecimalField(
+                        decimal_places=0, default=0, editable=False, max_digits=10
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("pending", "Pending"), ("processed", "Processed")],
+                        default="pending",
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "billing_cycle",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="payments",
+                        to="billing.billingcycle",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="payments",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "transaction",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="payments",
+                        to="billing.transaction",
+                    ),
+                ),
             ],
             options={
                 "abstract": False,

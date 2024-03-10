@@ -5,18 +5,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('billing', '0001_initial'),
-        ('tracker', '0001_initial'),
+        ("billing", "0001_initial"),
+        ("tracker", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='task',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='transactions', to='tracker.task'),
+            model_name="transaction",
+            name="task",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="transactions",
+                to="tracker.task",
+            ),
         ),
     ]

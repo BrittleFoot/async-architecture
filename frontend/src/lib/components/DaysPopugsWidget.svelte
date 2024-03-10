@@ -39,8 +39,6 @@
             })
             .flat()
             .map(user => user.todayBalance);
-
-        console.log(y);
         return { y };
     }
 
@@ -71,7 +69,14 @@
                 x: commonX,
                 ...prepareData(days, user),
                 type: 'bar',
+                opacity: 0.8,
                 name: user.username,
+                marker: {
+                    line: {
+                        color: '#9a9a9a',
+                        width: 1
+                    }
+                }
             };
         });
 
@@ -81,8 +86,11 @@
                 y: getCompanyBalance(days),
                 type: 'bar',
                 name: 'Company Profit',
-                line: {
-                    color: '#ff0000'
+                marker: {
+                    line: {
+                        color: '#1a1a1a',
+                        width: 1
+                    }
                 }
             } as any,
             ...data
@@ -119,7 +127,9 @@
             transition: {
                 duration: 120,
                 easing: 'cubic-in-out'
-            }
+            },
+            bargap: 0.5,
+            bargroupgap: 0.1
 		};
 
 		const extra = {

@@ -43,9 +43,13 @@
 	@for $i from 0 through $particles {
 		$box-shadow:
 			$box-shadow,
-			random($width)*1px - math.div($width, 2)*1px
-			random($height)*1px - math.div($height,1.2)*1px
-			hsl(random(360), 100%, 50%);
+			random($width) *
+				1px - math.div($width, 2) *
+				1px
+				random($height) *
+				1px - math.div($height, 1.2) *
+				1px
+				hsl(random(360), 100%, 50%);
 		$box-shadow2:
 			$box-shadow2,
 			0 0 #fff;

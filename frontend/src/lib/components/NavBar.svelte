@@ -3,7 +3,6 @@
 	import SignInButtons from './SignInButtons.svelte';
 
 	$: meAdmin = $page.data.user.roles.includes('admin');
-
 </script>
 
 <nav class="navbar">

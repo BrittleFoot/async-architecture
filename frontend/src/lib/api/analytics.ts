@@ -40,6 +40,33 @@ export interface Day {
 	highestRewardTransaction: Transaction | null;
 }
 
+export interface DayInfo {
+	id: number;
+	publicId: number;
+	name: string;
+	users: UserInfo[];
+}
+
+export interface UserInfo {
+	id: number;
+	publicId: string;
+	username: string;
+	transactions: TransactionInfo[];
+	totalProfit: number;
+	totalExpense: number;
+	todayBalance: number;
+}
+
+export interface TransactionInfo {
+	id: number;
+	publicId: string;
+	dayId: number;
+	type: string;
+	credit: string;
+	debit: string;
+	created: string;
+}
+
 export class AnalyticsService {
 	api: ApiClient;
 
@@ -49,5 +76,9 @@ export class AnalyticsService {
 
 	async getDayAnalytics() {
 		return await this.api.request<Day[]>(`/api/v1/analytics/day/`);
+	}
+
+	async getPerformersAnalytics() {
+		return await this.api.request<DayInfo[]>(`/api/v1/analytics/performer/`);
 	}
 }

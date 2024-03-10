@@ -33,6 +33,15 @@
 				...prepareData(days),
                 type: 'scatter',
                 mode: 'lines+markers',
+                name: 'Highest Task Price',
+                line: {
+                    color: '#242494',
+                    width: 1
+                },
+                marker: {
+                    color: '#4444B4',
+                    size: 12
+                },
 			}
 		];
 

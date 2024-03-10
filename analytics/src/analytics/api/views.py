@@ -6,11 +6,12 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from analytics.api.serializers import DaySerializer
 
 
-class DayAnalyicsView(ReadOnlyModelViewSet):
+class DayTaskAnalyicsView(ReadOnlyModelViewSet):
     serializer_class = DaySerializer
 
     queryset = (
         Day.objects.all()
+        .filter(public_id__gte=0)
         .prefetch_related("transactions__user", "transactions__task")
         .order_by("public_id")
     )

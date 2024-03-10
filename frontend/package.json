@@ -19,6 +19,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "8.56.0",
 		"@types/pg": "^8.11.0",
+		"@types/plotly.js": "^2.29.2",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"eslint": "^8.56.0",
@@ -39,6 +40,9 @@
 		"@auth/pg-adapter": "^0.6.0",
 		"@faker-js/faker": "^8.4.1",
 		"@picocss/pico": "^2.0.0",
-		"pg": "^8.11.3"
+		"pg": "^8.11.3",
+		"plotly.js": "^2.30.0",
+		"plotly.js-dist": "^2.30.0",
+		"plotly.js-dist-min": "^2.30.0"
 	}
 }

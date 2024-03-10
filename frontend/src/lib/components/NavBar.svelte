@@ -1,5 +1,9 @@
 <script>
+	import { page } from '$app/stores';
 	import SignInButtons from './SignInButtons.svelte';
+
+	$: meAdmin = $page.data.user.roles.includes('admin');
+
 </script>
 
 <nav class="navbar">
@@ -19,6 +23,11 @@
 		<li>
 			<a href="/balance">Balance</a>
 		</li>
+		{#if meAdmin}
+			<li>
+				<a href="/analytics">Analytics</a>
+			</li>
+		{/if}
 		<li>
 			<SignInButtons />
 		</li>

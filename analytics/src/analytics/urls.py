@@ -1,10 +1,10 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from analytics.api.views import DayAnalyicsView
+from analytics.api.views import DayTaskAnalyicsView
 
 router = SimpleRouter()
-router.register("", DayAnalyicsView)
+router.register("", DayTaskAnalyicsView)
 
 
 urlpatterns = [

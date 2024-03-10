@@ -85,7 +85,7 @@ class DaySerializer(serializers.ModelSerializer):
         return int(expense)
 
     def get_highest_reward_transaction(self, obj):
-        transaction = self._get_transactions(obj).order_by("-task__reward").first()
+        transaction = self._get_transactions(obj).order_by("-debit").first()
         if not transaction:
             return None
 

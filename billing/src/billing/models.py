@@ -111,6 +111,14 @@ class Transaction(TimestampedModel):
         related_name="transactions",
     )
 
+    task = models.ForeignKey(
+        "tracker.Task",
+        on_delete=models.PROTECT,
+        related_name="transactions",
+        null=True,
+        blank=True,
+    )
+
     type = models.CharField(max_length=255, choices=TransactionType.choices)
     comment = models.TextField()
 

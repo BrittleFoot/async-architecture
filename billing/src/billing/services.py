@@ -1,7 +1,12 @@
+from functools import cached_property
+
 from django.db import transaction as database_transaction
+from events.producer import Producer
+from jirapopug.schema.billing import v1
 from tracker.models import Task
 from users.models import User
 
+from billing.api.serializers import TransactionEventSerializer
 from billing.models import (
     BillingCycle,
     BillingCycleStatus,
@@ -47,14 +52,29 @@ def get_or_create_billing_cycle(user: User):
 
 
 class BillingService:
+    @cached_property
+    def producer(self):
+        return Producer("billing")
+
+    def send_transaction_event(self, transaction: Transaction):
+        print("Sending transaction event", transaction)
+        self.producer.send(
+            [
+                v1.TransactionCreated.model_validate(
+                    TransactionEventSerializer(transaction).data
+                )
+            ]
+        )
+
     @database_transaction.atomic
     def charge_fee(self, task: Task):
         billing_cycle = get_or_create_billing_cycle(task.performer)
 
-        Transaction.objects.create(
+        transaction = Transaction.objects.create(
             user=task.performer,
             billing_cycle=billing_cycle,
             type=TransactionType.EARNING,
+            task=task,
             credit=task.fee,
             comment=f"Fee for task {task}",
         )
@@ -67,14 +87,17 @@ class BillingService:
         day.profit += task.fee
         day.save()
 
+        self.send_transaction_event(transaction)
+
     @database_transaction.atomic
     def pay_reward(self, task: Task):
         billing_cycle = get_or_create_billing_cycle(task.performer)
 
-        Transaction.objects.create(
+        transaction = Transaction.objects.create(
             user=task.performer,
             billing_cycle=billing_cycle,
             type=TransactionType.EARNING,
+            task=task,
             debit=task.reward,
             comment=f"Reward for task {task}",
         )
@@ -86,6 +109,8 @@ class BillingService:
         day = billing_cycle.day
         day.profit -= task.reward
         day.save()
+
+        self.send_transaction_event(transaction)
 
     def create_payment_transaction(self, user: User, cycle: BillingCycle, amount: int):
         return Payment.objects.create(

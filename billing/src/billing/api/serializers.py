@@ -73,6 +73,10 @@ class AdminCalendarSerializer(CalendarSerializer):
 class DaySerializer(serializers.ModelSerializer):
     billing_cycles = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
+    public_id = serializers.SerializerMethodField()
+
+    def get_public_id(self, obj):
+        return obj.pk
 
     def get_name(self, obj):
         return obj.get_name()
@@ -88,6 +92,7 @@ class DaySerializer(serializers.ModelSerializer):
         model = Day
         fields = (
             "id",
+            "public_id",
             "name",
             "billing_cycles",
         )
@@ -96,3 +101,32 @@ class DaySerializer(serializers.ModelSerializer):
 class AdminDaySerializer(DaySerializer):
     class Meta(DaySerializer.Meta):
         fields = DaySerializer.Meta.fields + ("profit",)
+
+
+class TransactionEventSerializer(serializers.ModelSerializer):
+    user_id = serializers.SerializerMethodField()
+    task_id = serializers.SerializerMethodField()
+    day_id = serializers.SerializerMethodField()
+
+    def get_user_id(self, obj):
+        return str(obj.user.public_id)
+
+    def get_task_id(self, obj):
+        return str(obj.task.public_id)
+
+    def get_day_id(self, obj):
+        return obj.billing_cycle.day.pk
+
+    class Meta:
+        model = Transaction
+        fields = (
+            "public_id",
+            "user_id",
+            "task_id",
+            "day_id",
+            "type",
+            "credit",
+            "debit",
+            "comment",
+            "created",
+        )

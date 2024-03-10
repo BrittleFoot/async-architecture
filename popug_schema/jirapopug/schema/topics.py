@@ -7,3 +7,7 @@ class AuthStreamBase(BaseData):
 
 class TrackerStreamBase(BaseData):
     __topic__ = "tracker-stream"
+
+
+class BillingStreamBase(BaseData):
+    __topic__ = "billing-stream"

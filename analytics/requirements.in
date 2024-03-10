@@ -1,0 +1,16 @@
+Django<=6
+djangorestframework
+django-environ
+django-behaviors
+django-cors-headers
+django-oauth-toolkit
+djangorestframework-camel-case
+whitenoise
+requests
+pydantic
+../popug_schema
+
+psycopg2-binary
+uritemplate
+pyyaml
+confluent-kafka

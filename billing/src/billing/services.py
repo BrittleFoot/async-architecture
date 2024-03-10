@@ -113,7 +113,7 @@ class BillingService:
         self.send_transaction_event(transaction)
 
     def create_payment_transaction(self, user: User, cycle: BillingCycle, amount: int):
-        return Payment.objects.create(
+        payment = Payment.objects.create(
             # Assume that the payment is processed immediately,
             # Actual implementation may vary, but includes
             #   - queue for payment objects, then set status to "processed"
@@ -130,6 +130,21 @@ class BillingService:
                 comment=f"Zarplata {cycle.get_name()}",
             ),
         )
+
+        self.send_transaction_event(payment.transaction)
+        return payment
+
+    def create_bad_luck_transaction(self, user: User, cycle: BillingCycle, amount: int):
+        transaction = Transaction.objects.create(
+            user=user,
+            billing_cycle=cycle,
+            type=TransactionType.BAD_LUCK,
+            credit=abs(amount),
+            comment=f"Debt from previous cycle {cycle.get_name()}",
+        )
+
+        self.send_transaction_event(transaction)
+        return transaction
 
     @database_transaction.atomic
     def end_billing_cycle(self, new_day: Day, cycle: BillingCycle):
@@ -152,13 +167,7 @@ class BillingService:
         )
 
         if amount < 0:
-            Transaction.objects.create(
-                user=user,
-                billing_cycle=new_cycle,
-                type=TransactionType.BAD_LUCK,
-                credit=abs(amount),
-                comment=f"Debt from previous cycle {cycle.get_name()}",
-            )
+            self.create_bad_luck_transaction(user, new_cycle, amount)
 
         user.balance = amount
         user.save()

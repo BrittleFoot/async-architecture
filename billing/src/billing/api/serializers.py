@@ -112,7 +112,7 @@ class TransactionEventSerializer(serializers.ModelSerializer):
         return str(obj.user.public_id)
 
     def get_task_id(self, obj):
-        return str(obj.task.public_id)
+        return obj.task and str(obj.task.public_id)
 
     def get_day_id(self, obj):
         return obj.billing_cycle.day.pk

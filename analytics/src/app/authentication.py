@@ -1,7 +1,7 @@
 import os
 
 import requests
-from rest_framework import authentication, exceptions
+from rest_framework import authentication, exceptions, permissions
 from users.models import User
 
 
@@ -45,3 +45,8 @@ class OAuth2Authentication(authentication.BaseAuthentication):
 
     def get_user(self, user_data):
         return User.objects.get(public_id=user_data["public_id"])
+
+
+class IsAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.roles.filter(name="admin").exists()

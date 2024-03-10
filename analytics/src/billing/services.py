@@ -25,7 +25,7 @@ class TransactionService:
         created: str,
     ) -> Transaction:
         user = User.objects.get(public_id=user_id)
-        task = Task.objects.get(public_id=task_id)
+        task = task_id and Task.objects.get(public_id=task_id)
         day, _ = Day.objects.get_or_create(public_id=day_id)
 
         transaction = Transaction.objects.create(

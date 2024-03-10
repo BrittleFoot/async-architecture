@@ -7,7 +7,7 @@ class TransactionCreated(V1Base, BillingStreamBase):
 
     public_id: str
     user_id: str
-    task_id: str
+    task_id: str | None
     day_id: int
     type: str
     credit: str

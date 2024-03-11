@@ -1,3 +1,5 @@
+from unittest import mock
+
 import pytest
 from tracker.models import Task, TaskStatus
 from tracker.services import TaskService
@@ -23,7 +25,9 @@ def task(mixer, user) -> Task:
 
 @pytest.fixture
 def task_service() -> TaskService:
-    return TaskService()
+    ts = TaskService()
+    ts.producer = mock.MagicMock()
+    return ts
 
 
 def test_create_task(task_service, user):

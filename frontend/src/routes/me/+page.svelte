@@ -29,31 +29,26 @@
 
 	async function refreshManagedUsers() {
 		if (!meAdmin) return;
-		users = (await userService.listUsers()).filter(u => u.publicId !== me.publicId);
+		users = (await userService.listUsers()).filter((u) => u.publicId !== me.publicId);
 	}
-
-
 </script>
 
 <h1>🦜 {me.name}</h1>
 
 <h2>Edit personal info</h2>
 
-	<UserCard user={me} editor={me} {update}/>
-
+<UserCard user={me} editor={me} {update} />
 
 {#if meAdmin}
-<br/>
-<h2>Manage users</h2>
+	<br />
+	<h2>Manage users</h2>
 
-<div class="cards">
-	{#each users as user}
-		<UserCard {user} editor={me} {update}/>
-	{/each}
-</div>
-
+	<div class="cards">
+		{#each users as user}
+			<UserCard {user} editor={me} {update} />
+		{/each}
+	</div>
 {/if}
-
 
 <style>
 	.cards {

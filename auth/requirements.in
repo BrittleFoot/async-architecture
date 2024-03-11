@@ -6,6 +6,8 @@ django-cors-headers
 django-oauth-toolkit
 djangorestframework-camel-case
 whitenoise
+pydantic
+../popug_schema
 
 psycopg2-binary
 uritemplate

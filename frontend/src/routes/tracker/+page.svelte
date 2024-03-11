@@ -25,8 +25,7 @@
 	onMount(async () => {
 		try {
 			await refreshTasks();
-		}
-		finally {
+		} finally {
 			firstLoad = false;
 		}
 	});
@@ -36,11 +35,11 @@
 		await refreshTasks();
 	}
 
-	async function createTask(summary: string) {
+	async function createTask(taskId: string, summary: string) {
 		// optimistic update!
-		renderTasks = [{ summary, optimistic: true } as Task, ...tasks];
+		renderTasks = [{ taskId, summary, optimistic: true } as Task, ...tasks];
 		try {
-			let newTask = await trackerService.createTask(summary);
+			let newTask = await trackerService.createTaskV2(taskId, summary);
 			// twice optimistic update!
 			renderTasks = [newTask, ...tasks];
 			await refreshTasks();

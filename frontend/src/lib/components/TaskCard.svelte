@@ -29,18 +29,18 @@
 		}
 		submitting = false;
 	}
-
 </script>
 
 <form on:submit|preventDefault={handleSubmit} class:optimistic={task.optimistic}>
 	<input type="hidden" name="id" value={task.id} />
 	<fieldset role="group">
-		<input type="text" readonly value={task.summary} aria-label="Read-only input"/>
-		<input type="text" class="divider" readonly value="🦜" aria-label="Read-only input" />
+		<input type="text" class="task-id" readonly value={task.taskId || 'GENERAL'} />
+		<input type="text" class="summary" readonly value={task.summary} />
+		<input type="text" class="divider" readonly value="🦜" />
 		<input
 			type="performer"
 			readonly
-			value="{task.performer?.username ?? 'Unassigned'}"
+			value={task.performer?.username ?? 'Unassigned'}
 			class="performer"
 			aria-label="Read-only input"
 		/>
@@ -48,19 +48,19 @@
 		{#if error}
 			<button type="submit" class="nowrap" {disabled}>
 				😥
-				<div class="tooltip" data-tooltip="{error}" data-placement="left"/>
+				<div class="tooltip" data-tooltip={error} data-placement="left" />
 			</button>
 		{:else if task.status === 'done'}
 			<button type="submit" class="nowrap success" disabled aria-busy={submitting}>
-				{submitting ? "" : '👍'}
-				<div class="tooltip" data-tooltip="Completed!"/>
+				{submitting ? '' : '👍'}
+				<div class="tooltip" data-tooltip="Completed!" />
 			</button>
 		{:else if isMeTaskOwner}
 			<button type="submit" class="nowrap" {disabled} data-tooltip="Complete the task!">🏁</button>
 		{:else}
 			<button type="submit" class="nowrap secondary" disabled>
 				🙊
-				<div class="tooltip" data-tooltip="Not your task 🥳"/>
+				<div class="tooltip" data-tooltip="Not your task 🥳" />
 			</button>
 		{/if}
 	</fieldset>
@@ -104,4 +104,12 @@
 		opacity: 0.5;
 	}
 
+	.task-id {
+		width: 10em;
+		text-align: center;
+	}
+
+	.summary {
+		text-overflow: ellipsis;
+	}
 </style>

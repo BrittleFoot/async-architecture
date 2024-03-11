@@ -4,7 +4,7 @@
 
 	export let form;
 
-	let name = "";
+	let name = '';
 	onMount(() => {
 		name = faker.person.firstName();
 	});

@@ -1,4 +1,4 @@
-<h1>Welcome to <br/>🥳 Popug Awesome Tracker 🎉</h1>
+<h1>Welcome to <br />🥳 Popug Awesome Tracker 🎉</h1>
 
 <div class="center">
 	<div data-tooltip="💂‍♀️ Please follow me" class="image-wrap">

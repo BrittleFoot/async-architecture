@@ -7,9 +7,9 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from tracker.api.serializers import TaskSerializer
+from tracker.api.serializers import TaskSerializer, TaskV2Serializer
 from tracker.models import Task
-from tracker.services import TaskService
+from tracker.services import TaskService, TaskV2Service
 
 
 class TaskViewSet(ListViewSet):
@@ -65,3 +65,21 @@ class TrackerReassignView(APIView):
 
         self.task_service.reassign_tasks()
         return Response(status=status.HTTP_200_OK)
+
+
+class TaskV2ViewSet(TaskViewSet):
+    serializer_class = TaskV2Serializer
+
+    @property
+    def task_service(self):
+        return TaskV2Service()
+
+    def create(self, request, *args, **kwargs):
+        task = self.task_service.create_task(
+            request.data.get("task_id"),
+            request.data.get("summary"),
+        )
+        return Response(
+            self.get_serializer_class()(task).data,
+            status=status.HTTP_201_CREATED,
+        )

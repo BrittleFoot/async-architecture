@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import environ
@@ -14,6 +15,11 @@ environ.Env.read_env(BASE_DIR / ".env")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+logging.basicConfig(
+    level=logging.INFO, format="[%(asctime)s] - %(name)s - %(levelname)s - %(message)s"
+)
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-3x-ab4%uwykswbk9g75q@@iyob(2bg*dpwl!n8p*g&f+p33p-r"
 
@@ -28,7 +34,6 @@ if DEBUG or env("CORS_ALLOW_ALL_ORIGINS"):
 # Application definition
 
 INTERNAL_APPS = [
-    "books",
     "users",
 ]
 

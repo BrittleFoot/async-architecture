@@ -96,6 +96,29 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
+  # ======== Frontend =======
+
+  frontend:
+    build: frontend
+    ports:
+      - 80:3000
+    depends_on:
+      - postgres-frontend
+    environment:
+      # T0d0: Change to actual public URLs
+      - DATABASE_URL=postgres://postgres@postgres-frontend/postgres
+      - PUBLIC_AUTH_BACKEND_URL=http://service-auth:8000
+      - PUBLIC_TRACKER_BACKEND_URL=http://service-tracker:8000
+      - PUBLIC_BILLING_BACKEND_URL=http://service-billing:8000
+      - PUBLIC_ANALYTICS_BACKEND_URL=http://service-analytics:8000
+    env_file:
+      - .env.frontend
+
+  postgres-frontend:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
   # =============== Supplementary Services ===============
 
   # Kafka

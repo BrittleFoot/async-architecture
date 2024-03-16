@@ -1,5 +1,4 @@
-from datetime import datetime
-from time import timezone
+from datetime import datetime, timezone
 
 from app.models import TimestampedModel
 from django.contrib.auth.models import AbstractUser

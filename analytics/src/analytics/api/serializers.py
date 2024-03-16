@@ -99,7 +99,6 @@ class DaySerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "public_id",
-            "profit",
             "name",
             "total_transactions",
             "total_profit",

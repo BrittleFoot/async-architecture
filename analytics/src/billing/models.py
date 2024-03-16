@@ -15,6 +15,7 @@ WEEKDAYS = [
 
 
 class Day(TimestampedModel):
+    # unused, dayly profit is calculated from transactions
     profit = models.DecimalField(
         max_digits=10,
         decimal_places=0,

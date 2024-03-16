@@ -16,6 +16,7 @@ class User(AbstractUser, TimestampedModel):
     roles = models.ManyToManyField(UserRole, related_name="users")
     public_id = models.UUIDField(unique=True, editable=False)
 
+    # unused, user balance is calculated from transactions
     balance = models.DecimalField(max_digits=10, decimal_places=0, default=0)
 
     def __str__(self):

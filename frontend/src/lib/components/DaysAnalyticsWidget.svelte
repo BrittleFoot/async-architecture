@@ -12,7 +12,7 @@
 			if (name.length == 1) {
 				return name[0];
 			}
-			return name[1] + ', ' + name[2];
+			return `${name[1]}, ${name[2]}<br>(${day.id})`;
 		});
 		const y = days.map((day) => day.highestRewardTransaction?.task?.reward || 0);
 		const text = days.map((day) => {

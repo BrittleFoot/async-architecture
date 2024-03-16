@@ -57,7 +57,6 @@ class BillingService:
         return Producer("billing")
 
     def send_transaction_event(self, transaction: Transaction):
-        print("Sending transaction event", transaction)
         self.producer.send(
             [
                 v1.TransactionCreated.model_validate(

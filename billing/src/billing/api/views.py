@@ -49,6 +49,9 @@ class BillingDayViewSet(CreateModelMixin, ReadOnlyModelViewSet):
         )
 
     def get_serializer_context(self):
+        print("Balance request")
+        print("self.request.user", self.request.user)
+        print("is_admin(self.request.user)", is_admin(self.request.user))
         return {
             "is_admin": is_admin(self.request.user),
             "user": self.request.user,

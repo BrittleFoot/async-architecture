@@ -1,5 +1,5 @@
 import type { Account, User } from '@auth/sveltekit';
-import connectionPool from './connect';
+import getConnectionPool from './connect';
 
 export type TokenInfo = {
 	userId: number;
@@ -11,7 +11,7 @@ export type TokenInfo = {
 
 export async function getUserAccount(userId: string) {
 	let sql = `SELECT * FROM accounts WHERE "userId" = $1`;
-	let result = await connectionPool.query(sql, [userId]);
+	let result = await getConnectionPool().query(sql, [userId]);
 	return result.rowCount === 0 ? null : result.rows[0];
 }
 
@@ -28,7 +28,7 @@ export async function updateUserAccount(userId: number, account: Account) {
         WHERE "userId" = $1;
     `;
 
-	await connectionPool.query(sql, [
+	await getConnectionPool().query(sql, [
 		userId,
 		account.access_token,
 		account.token_type,
@@ -51,7 +51,7 @@ export async function getTokenInfoBySessionToken(sessionToken: string): Promise<
         left join accounts on sessions."userId" = accounts."userId"
         where sessions."sessionToken" = $1
     `;
-	let result = await connectionPool.query(sql, [sessionToken]);
+	let result = await getConnectionPool().query(sql, [sessionToken]);
 	if (result.rowCount === 0) {
 		return null;
 	}
@@ -69,5 +69,5 @@ export async function clearTokenInfoBySessionToken(accessToken: string) {
         SET "accessToken" = '', "refreshToken" = ''
         WHERE "sessionToken" = $1;
 `;
-	// await connectionPool.query(sql, [sessionToken]);
+	// await getConnectionPool().query(sql, [sessionToken]);
 }

@@ -1,5 +1,5 @@
-import { CLIENT_ID, CLIENT_SECRET } from '$env/static/private';
-import { PUBLIC_AUTH_BACKEND_URL } from '$env/static/public';
+import { env as envPrivate } from '$env/dynamic/private';
+import { env } from '$env/dynamic/public';
 import ApiClient from '$lib';
 import { getTokenInfoBySessionToken, updateUserAccount, type TokenInfo } from '$lib/db/methods';
 import type { Account } from '@auth/sveltekit';
@@ -16,7 +16,7 @@ export class AuthService {
 	api: ApiClient;
 
 	constructor() {
-		this.api = new ApiClient({ backendUrl: PUBLIC_AUTH_BACKEND_URL });
+		this.api = new ApiClient({ backendUrl: env.PUBLIC_AUTH_BACKEND_URL });
 	}
 
 	async signIn(userId: number, account: Account) {
@@ -44,8 +44,8 @@ export class AuthService {
 
 		let formData = new FormData();
 		formData.append('token', tokenInfo.accessToken);
-		formData.append('client_id', CLIENT_ID);
-		formData.append('client_secret', CLIENT_SECRET);
+		formData.append('client_id', envPrivate.CLIENT_ID);
+		formData.append('client_secret', envPrivate.CLIENT_SECRET);
 
 		await this.api.request('/oauth/revoke_token/', {
 			method: 'POST',
@@ -65,8 +65,8 @@ export class AuthService {
 		let formData = new FormData();
 		formData.append('grant_type', 'refresh_token');
 		formData.append('refresh_token', tokenInfo.refreshToken);
-		formData.append('client_id', CLIENT_ID);
-		formData.append('client_secret', CLIENT_SECRET);
+		formData.append('client_id', envPrivate.CLIENT_ID);
+		formData.append('client_secret', envPrivate.CLIENT_SECRET);
 
 		let token = await this.api.request<TokenResponse>('/oauth/token/', {
 			method: 'POST',

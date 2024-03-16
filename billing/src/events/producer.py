@@ -12,7 +12,7 @@ class Producer:
         self.name = name
         self.kp = KafkaProducer(
             {
-                "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
+                "bootstrap.servers": os.getenv("KAFKA_BROKER"),
             }
         )
 

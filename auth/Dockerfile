@@ -2,16 +2,16 @@ FROM python:3.12-slim
 
 RUN apt update && \
     apt install --no-install-recommends -y \
-    build-essential git locales-all wait-for-it
+    build-essential git locales-all
 
 RUN pip install --no-cache-dir --upgrade pip uwsgi
 
-ADD requirements.txt /srv
+ADD auth/requirements.txt /srv/requirements.txt
 
 RUN pip install --no-cache-dir -r /srv/requirements.txt
 
-ADD src /srv
-RUN rm -f /srv/.env
+ADD popug_schema/jirapopug /srv/jirapopug
+ADD auth/src srv
 WORKDIR /srv
 
 

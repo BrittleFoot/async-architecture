@@ -1,0 +1,146 @@
+version: '3'
+
+
+services:
+
+  # =============== Main Services ===============
+
+  # ======= Auth Service =======
+  service-auth:
+    build:
+      context: .
+      dockerfile: ./auth/Dockerfile
+    depends_on:
+      - postgres-auth
+      - broker
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-auth/postgres
+      - KAFKA_BROKER=broker:9092
+      - KAFKA_GROUP_ID=auth
+    env_file:
+      - .env.auth
+
+  postgres-auth:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  # ======= Tracker Service =======
+  service-tracker:
+    build:
+      context: .
+      dockerfile: ./tracker/Dockerfile
+    depends_on:
+      - postgres-tracker
+      - broker
+    ports:
+      - 8001:8000
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-tracker/postgres
+      - KAFKA_BROKER=broker:9092
+      - AUTH_VALIDATE_TOKEN_HOST=http://service-auth:8000/oauth/introspect/
+      - KAFKA_GROUP_ID=tracker
+    env_file:
+      - .env.tracker
+
+  postgres-tracker:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  # ======== Billing Service =======
+  service-billing:
+    build:
+      context: .
+      dockerfile: ./billing/Dockerfile
+    depends_on:
+      - postgres-billing
+      - broker
+    ports:
+      - 8002:8000
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-billing/postgres
+      - KAFKA_BROKER=broker:9092
+      - AUTH_VALIDATE_TOKEN_HOST=http://service-auth:8000/oauth/introspect/
+      - KAFKA_GROUP_ID=billing
+    env_file:
+      - .env.billing
+
+  postgres-billing:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  # ======== Analytics Service =======
+  service-analytics:
+    build:
+      context: .
+      dockerfile: ./analytics/Dockerfile
+    depends_on:
+      - postgres-analytics
+      - broker
+    ports:
+      - 8003:8000
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-analytics/postgres
+      - KAFKA_BROKER=broker:9092
+      - AUTH_VALIDATE_TOKEN_HOST=http://service-auth:8000/oauth/introspect/
+      - KAFKA_GROUP_ID=analytics
+    env_file:
+      - .env.analytics
+
+  postgres-analytics:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  # ======== Frontend =======
+
+  frontend:
+    build: frontend
+    ports:
+      - 80:3000
+    depends_on:
+      - postgres-frontend
+    environment:
+      # T0d0: Change to actual public URLs
+      - DATABASE_URL=postgres://postgres@postgres-frontend/postgres
+      - PUBLIC_AUTH_BACKEND_URL=http://service-auth:8000
+      - PUBLIC_TRACKER_BACKEND_URL=http://service-tracker:8000
+      - PUBLIC_BILLING_BACKEND_URL=http://service-billing:8000
+      - PUBLIC_ANALYTICS_BACKEND_URL=http://service-analytics:8000
+    env_file:
+      - .env.frontend
+
+  postgres-frontend:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  # =============== Supplementary Services ===============
+
+  # Kafka
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost

@@ -4,3 +4,9 @@ aa_service_template
 .env
 **/.*_cache
 .DS_Store
+
+.env.analytics
+.env.auth
+.env.billing
+.env.tracker
+.env.frontend

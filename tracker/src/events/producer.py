@@ -12,7 +12,7 @@ class Producer:
         self.name = name
         self.kp = KafkaProducer(
             {
-                "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
+                "bootstrap.servers": os.getenv("KAFKA_BROKER"),
             }
         )
 
@@ -39,4 +39,6 @@ class Producer:
                 callback=self.delivery_report,
             )
 
-        self.kp.flush()
+        # I don't know, without flush() its way faster
+        # need to optimize when I flush, now I hereby accept that message could be lost
+        # self.kp.flush()

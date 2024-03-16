@@ -1,4 +1,4 @@
-import { PUBLIC_TRACKER_BACKEND_URL } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import ApiClient from '$lib';
 
 export type Task = {
@@ -22,7 +22,7 @@ export class TrackerService {
 	api: ApiClient;
 
 	constructor(accessToken?: string) {
-		this.api = new ApiClient({ backendUrl: PUBLIC_TRACKER_BACKEND_URL, accessToken });
+		this.api = new ApiClient({ backendUrl: env.PUBLIC_TRACKER_BACKEND_URL, accessToken });
 	}
 
 	async getTasks(hideCompleted?: boolean): Promise<Task[]> {

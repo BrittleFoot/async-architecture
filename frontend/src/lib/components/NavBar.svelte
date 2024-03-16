@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import SignInButtons from './SignInButtons.svelte';
 
-	$: meAdmin = $page.data.user.roles.includes('admin');
+	$: meAdmin = $page.data.user?.roles?.includes('admin') ?? false;
 </script>
 
 <nav class="navbar">

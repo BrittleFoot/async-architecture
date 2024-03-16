@@ -1,8 +1,9 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
-import { CLIENT_ID, CLIENT_SECRET } from '$env/static/private';
+import { env as envPrivate } from '$env/dynamic/private';
+import { env } from '$env/dynamic/public';
 import type { OAuth2Config } from '@auth/core/providers';
 import PostgresAdapter from '@auth/pg-adapter';
-import connectionPool from '$lib/db/connect';
+import getConnectionPool from '$lib/db/connect';
 import { AuthService } from '$lib/api/auth';
 
 function isUUID(str: string): boolean {
@@ -17,18 +18,19 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 			id: 'popug-auth',
 			name: 'Popug Auth',
 			type: 'oauth',
-			issuer: 'http://127.0.0.1:8000',
+			issuer: env.PUBLIC_AUTH_BACKEND_URL,
 			authorization: {
-				url: 'http://127.0.0.1:8000/oauth/authorize/',
+				url: env.PUBLIC_AUTH_BACKEND_URL + '/oauth/authorize/',
 				params: { scope: 'read write' }
 			},
-			token: 'http://127.0.0.1:8000/oauth/token/',
-			userinfo: 'http://127.0.0.1:8000/api/v1/users/me/',
-			clientId: CLIENT_ID,
-			clientSecret: CLIENT_SECRET
+			token: env.PUBLIC_AUTH_BACKEND_URL + '/oauth/token/',
+			userinfo: env.PUBLIC_AUTH_BACKEND_URL + '/api/v1/users/me/',
+			clientId: envPrivate.CLIENT_ID,
+			clientSecret: envPrivate.CLIENT_SECRET
 		} satisfies OAuth2Config<User>
 	],
-	adapter: PostgresAdapter(connectionPool),
+	trustHost: true,
+	adapter: PostgresAdapter(getConnectionPool()),
 	callbacks: {
 		async signIn({ account, user, profile }) {
 			let firstTimeSignIn = isUUID(user.id ?? '');

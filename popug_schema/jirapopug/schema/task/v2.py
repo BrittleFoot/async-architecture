@@ -1,4 +1,4 @@
-from jirapopug.schema.topics import TrackerStreamBase
+from jirapopug.schema.topics import BillingStreamBase, TrackerStreamBase
 from jirapopug.schema.versions import V2Base
 
 
@@ -30,7 +30,7 @@ class TaskCompleted(V2Base, TrackerStreamBase):
     completion_date: str
 
 
-class TaskPriceUpdated(V2Base, TrackerStreamBase):
+class TaskPriceUpdated(V2Base, BillingStreamBase):
     __event_name__ = "task.price_updated"
 
     public_id: str

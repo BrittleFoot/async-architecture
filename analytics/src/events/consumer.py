@@ -64,6 +64,11 @@ class Consumer:
         raise KafkaException(error)
 
     def parse_message(self, topic: str, message_value: str) -> Message[dict]:
+        if message_value is None:
+            self.warn(
+                f"Empty message value from topic {topic}, probably init message. Skipping..."
+            )
+            return None
         try:
             message = json.loads(message_value)
             return Message[dict].model_validate(message)

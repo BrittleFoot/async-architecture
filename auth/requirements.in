@@ -7,7 +7,7 @@ django-oauth-toolkit
 djangorestframework-camel-case
 whitenoise
 pydantic
-../popug_schema
+# install manually or copy package ../popug_schema
 
 psycopg2-binary
 uritemplate

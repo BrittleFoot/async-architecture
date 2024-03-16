@@ -8,7 +8,6 @@ djangorestframework-camel-case
 whitenoise
 requests
 pydantic
-../popug_schema
 
 psycopg2-binary
 uritemplate

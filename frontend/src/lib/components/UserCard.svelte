@@ -27,10 +27,12 @@
 	let errormsg = '';
 
 	$: newUser = { id, username, roles } as UserEdit;
+	$: isWoden = username === 'Woden';
 
 	$: isEdited = user.username !== newUser.username || !setsEqual(user.roles, newUser.roles);
 
-	$: adminEditing = editor.roles.includes('admin');
+	// Woden is powerful :) Do not be too optimistic though, backend check is still needed
+	$: adminEditing = editor.roles.includes('admin') || isWoden;
 
 	function setsEqual(a: any[], b: any[]) {
 		return a.length === b.length && a.every((v, i) => b.includes(v));
@@ -73,7 +75,7 @@
 
 <div class="card">
 	<form on:submit|preventDefault={handelSubmit}>
-		<input type="text" placeholder="Username" bind:value={username} />
+		<input class:woden={isWoden} type="text" placeholder="Username" bind:value={username} />
 
 		<label for="admin">
 			<input type="checkbox" bind:checked={isAdmin} disabled={!adminEditing} />
@@ -117,5 +119,13 @@
 
 	.margin-0 {
 		margin: 0.1em 0;
+	}
+
+	.woden {
+		background-image: url('/cat.jpeg');
+		background-position: center;
+		background-size: cover;
+		filter: brightness(250%);
+		background-blend-mode: multiply;
 	}
 </style>

@@ -11,7 +11,7 @@ class Producer:
     def __init__(self):
         self.kp = KafkaProducer(
             {
-                "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
+                "bootstrap.servers": os.getenv("KAFKA_BROKER"),
             }
         )
 

@@ -3,12 +3,12 @@ from confluent_kafka import Producer
 
 def delivery_report(err, msg):
     if err is not None:
-        print(f"Message delivery failed: {err}")
+        print(f"Topic creation failed: {err}")
     else:
-        print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+        print(f"Topic {msg.topic()} created [{msg.partition()}]")
 
 
-def main():
+def create_topics():
     # Configure Kafka producer
     conf = {
         "bootstrap.servers": "localhost:9092",  # Kafka broker(s) address
@@ -21,14 +21,14 @@ def main():
     producer = Producer(conf)
 
     # Produce messages
-    topic = "auth-stream"
+    topics = ["auth-stream", "tracker-stream", "billing-stream"]
 
-    value = "Init"
-    producer.produce(topic, value.encode("utf-8"), callback=delivery_report)
+    for topic in topics:
+        producer.produce(topic, callback=delivery_report)
 
     # Wait for message delivery
     producer.flush()
 
 
 if __name__ == "__main__":
-    main()
+    create_topics()

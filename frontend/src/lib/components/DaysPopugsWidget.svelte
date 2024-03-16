@@ -60,7 +60,7 @@
 			if (name.length == 1) {
 				return name[0];
 			}
-			return name[1] + ', ' + name[2];
+			return `${name[1]}, ${name[2]}<br>(${day.id})`;
 		});
 
 		let data = users.map((user) => {

@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from django.db import transaction as database_transaction
 from tracker.models import Task
 from users.models import User
@@ -39,8 +37,5 @@ class TransactionService:
             comment=comment,
             created=created,
         )
-
-        day.profit += Decimal(transaction.credit)
-        day.profit -= Decimal(transaction.debit)
 
         return transaction

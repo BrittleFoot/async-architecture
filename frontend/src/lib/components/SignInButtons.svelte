@@ -6,30 +6,29 @@
 
 <div class="nowrap">
 	{#if $page.data.session}
-	<li>
-		<a href="/me">
-			<button>{username}</button>
-		</a>
-	</li>
-	<li>
-		<a href="/signout">
-			<button>Sign Out</button>
-		</a>
-	</li>
+		<li>
+			<a href="/me">
+				<button>{username}</button>
+			</a>
+		</li>
+		<li>
+			<a href="/signout">
+				<button>Sign Out</button>
+			</a>
+		</li>
 	{:else}
-	<li>
-		<a href="/signup">
-			<button>Sign Up</button>
-		</a>
-	</li>
-	<li>
-		<a href="/signin">
-			<button class="success">Sign In</button>
-		</a>
-	</li>
+		<li>
+			<a href="/signup">
+				<button>Sign Up</button>
+			</a>
+		</li>
+		<li>
+			<a href="/signin">
+				<button class="success">Sign In</button>
+			</a>
+		</li>
 	{/if}
 </div>
-
 
 <style>
 	button {

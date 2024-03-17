@@ -3,7 +3,6 @@
 	<button type="submit">Sign in with Popug Auth</button>
 </form>
 
-
 <style>
 	@keyframes pulse {
 		0% {

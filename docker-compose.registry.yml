@@ -15,14 +15,10 @@ services:
 
   # ======= Auth Service =======
   service-auth:
-    build:
-      context: .
-      dockerfile: ./auth/Dockerfile
+    image: sjc.vultrcr.com/buftio/aa-service-auth:latest
     depends_on:
       - postgres-auth
       - broker
-    ports:
-      - 8000:8000
     environment:
       - DATABASE_URL=postgres://postgres@postgres-auth/postgres
       - KAFKA_BROKER=broker:9092
@@ -32,19 +28,17 @@ services:
 
   postgres-auth:
     image: postgres:16.1
+    volumes:
+      - ./data/postgres-auth:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
   # ======= Tracker Service =======
   service-tracker:
-    build:
-      context: .
-      dockerfile: ./tracker/Dockerfile
+    image: sjc.vultrcr.com/buftio/aa-service-tracker:latest
     depends_on:
       - postgres-tracker
       - broker
-    ports:
-      - 8001:8000
     environment:
       - DATABASE_URL=postgres://postgres@postgres-tracker/postgres
       - KAFKA_BROKER=broker:9092
@@ -53,21 +47,32 @@ services:
     env_file:
       - .env.tracker
 
+  consumer-tracker:
+    image: sjc.vultrcr.com/buftio/aa-service-tracker:latest
+    command: ./manage.py consumer
+    depends_on:
+      - postgres-tracker
+      - broker
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-tracker/postgres
+      - KAFKA_BROKER=broker:9092
+      - KAFKA_GROUP_ID=tracker
+    env_file:
+      - .env.tracker
+
   postgres-tracker:
     image: postgres:16.1
+    volumes:
+      - ./data/postgres-tracker:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
   # ======== Billing Service =======
   service-billing:
-    build:
-      context: .
-      dockerfile: ./billing/Dockerfile
+    image: sjc.vultrcr.com/buftio/aa-service-billing:latest
     depends_on:
       - postgres-billing
       - broker
-    ports:
-      - 8002:8000
     environment:
       - DATABASE_URL=postgres://postgres@postgres-billing/postgres
       - KAFKA_BROKER=broker:9092
@@ -76,25 +81,49 @@ services:
     env_file:
       - .env.billing
 
+  consumer-billing:
+    image: sjc.vultrcr.com/buftio/aa-service-billing:latest
+    command: ./manage.py consumer
+    depends_on:
+      - postgres-billing
+      - broker
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-billing/postgres
+      - KAFKA_BROKER=broker:9092
+      - KAFKA_GROUP_ID=billing
+    env_file:
+      - .env.billing
+
   postgres-billing:
     image: postgres:16.1
+    volumes:
+      - ./data/postgres-billing:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
   # ======== Analytics Service =======
   service-analytics:
-    build:
-      context: .
-      dockerfile: ./analytics/Dockerfile
+    image: sjc.vultrcr.com/buftio/aa-service-analytics:latest
     depends_on:
       - postgres-analytics
       - broker
-    ports:
-      - 8003:8000
     environment:
       - DATABASE_URL=postgres://postgres@postgres-analytics/postgres
       - KAFKA_BROKER=broker:9092
       - AUTH_VALIDATE_TOKEN_HOST=http://service-auth:8000/oauth/introspect/
+      - KAFKA_GROUP_ID=analytics
+    env_file:
+      - .env.analytics
+
+  consumer-analytics:
+    image: sjc.vultrcr.com/buftio/aa-service-analytics:latest
+    command: ./manage.py consumer
+    depends_on:
+      - postgres-analytics
+      - broker
+    environment:
+      - DATABASE_URL=postgres://postgres@postgres-analytics/postgres
+      - KAFKA_BROKER=broker:9092
       - KAFKA_GROUP_ID=analytics
     env_file:
       - .env.analytics
@@ -107,13 +136,10 @@ services:
   # ======== Frontend =======
 
   frontend:
-    build: frontend
-    ports:
-      - 80:3000
+    image: sjc.vultrcr.com/buftio/aa-frontend:latest
     depends_on:
       - postgres-frontend
     environment:
-      # T0d0: Change to actual public URLs
       - DATABASE_URL=postgres://postgres@postgres-frontend/postgres
       - PUBLIC_AUTH_BACKEND_URL=https://auth.aa.buft.io
       - PUBLIC_TRACKER_BACKEND_URL=https://tracker.aa.buft.io
@@ -124,6 +150,8 @@ services:
 
   postgres-frontend:
     image: postgres:16.1
+    volumes:
+      - ./data/postgres-frontend:/var/lib/postgresql/data
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
 
@@ -145,7 +173,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://broker:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1

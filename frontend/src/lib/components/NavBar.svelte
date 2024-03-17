@@ -27,9 +27,7 @@
 				<a href="/analytics">Analytics</a>
 			</li>
 		{/if}
-		<li>
-			<SignInButtons />
-		</li>
+		<SignInButtons />
 	</ul>
 </nav>
 
@@ -37,6 +35,7 @@
 	.parrot {
 		width: 2em;
 		height: 2em;
+		aspect-ratio: 1 / 1;
 	}
 
 	.navbar {

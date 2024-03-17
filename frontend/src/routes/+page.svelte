@@ -2,7 +2,9 @@
 
 <div class="center">
 	<div data-tooltip="💂‍♀️ Please follow me" class="image-wrap">
-		<img src="/parrot.png" alt="Parrots" />
+		<a href="/warm-welcome">
+			<img src="/parrot.png" alt="Parrots" />
+		</a>
 	</div>
 </div>
 

@@ -9,6 +9,16 @@ from billing.models import (
 
 
 class TransactionService:
+    def get_or_create_task(self, public_id: str, user: User) -> Task:
+        task, _ = Task.objects.get_or_create(
+            public_id=public_id,
+            defaults={
+                "summary": "(task summary still loading)",
+                "performer": user,
+            },
+        )
+        return task
+
     @database_transaction.atomic
     def create_transaction(
         self,
@@ -23,7 +33,7 @@ class TransactionService:
         created: str,
     ) -> Transaction:
         user = User.objects.get(public_id=user_id)
-        task = task_id and Task.objects.get(public_id=task_id)
+        task = task_id and self.get_or_create_task(public_id=task_id, user=user)
         day, _ = Day.objects.get_or_create(public_id=day_id)
 
         transaction = Transaction.objects.create(

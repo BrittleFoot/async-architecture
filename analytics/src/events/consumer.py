@@ -93,7 +93,6 @@ class Consumer:
             self.warn(f"Invalid message format from topic {topic}: {message}")
             self.warn(f"Error: {e}")
 
-    @manual_skip
     def process(self, msg: KafkaMessage):
         topic = msg.topic()
         message_value = msg.value()

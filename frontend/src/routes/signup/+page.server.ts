@@ -16,7 +16,10 @@ export const actions: Actions = {
 
 		let regInfo = {
 			username: formData.get('username')?.toString() ?? '',
-			password: formData.get('password')?.toString() ?? ''
+			password: formData.get('password')?.toString() ?? '',
+			isAdmin: formData.get('isAdmin') ?? false,
+			isManager: formData.get('isManager') ?? false,
+			isPerformer: formData.get('isPerformer') ?? false
 		};
 
 		let errors: RegistraionErrors = {};
@@ -33,8 +36,19 @@ export const actions: Actions = {
 			};
 		}
 
+		let roles = [];
+		if (regInfo.isAdmin) {
+			roles.push('admin');
+		}
+		if (regInfo.isManager) {
+			roles.push('manager');
+		}
+		if (regInfo.isPerformer) {
+			roles.push('performer');
+		}
+
 		try {
-			let user = await new AuthService().signUp(regInfo.username, regInfo.password);
+			let user = await new AuthService().signUp(regInfo.username, regInfo.password, roles);
 			return {
 				user
 			};

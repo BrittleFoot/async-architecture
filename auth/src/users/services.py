@@ -10,6 +10,12 @@ def _roles(roles: list):
     return UserRole.objects.filter(name__in=roles)
 
 
+def _create_roles(roles: list):
+    for role in roles:
+        rm, _ = UserRole.objects.get_or_create(name=role)
+        yield rm
+
+
 def _serialize_user(user: User):
     return UserSerializer(user).data
 
@@ -20,7 +26,11 @@ class UserService:
 
     @transaction.atomic
     def create_user(self, **data: dict):
+        roles = data.pop("roles", [])
         user = User.objects.create_user(**data, is_staff=True)
+
+        if roles:
+            user.roles.set(_roles(roles))
 
         event = AccountCreated.model_validate(_serialize_user(user))
         self.producer.send([event])

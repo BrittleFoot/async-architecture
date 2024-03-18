@@ -27,13 +27,13 @@ export class AuthService {
 		await this.revokeToken(tokenInfo);
 	}
 
-	async signUp(username: string, password: string) {
+	async signUp(username: string, password: string, roles: string[]) {
 		return await this.api.unsafeRequest<User>('/api/v1/users/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ username, password })
+			body: JSON.stringify({ username, password, roles })
 		});
 	}
 
